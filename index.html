@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>German Verbs · Flashcard</title>
+
+    <!-- Google Fonts for a clean, professional look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ——— Reset & Base ——— */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #f6f8fc;
+            --card-bg: #ffffff;
+            --text-primary: #1a1e2b;
+            --text-secondary: #5b6378;
+            --text-muted: #8e95a8;
+            --accent: #4f6ef7;
+            --accent-light: #e8ecff;
+            --accent-hover: #3a56d4;
+            --shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.08), 0 8px 24px -6px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 32px 64px -16px rgba(0, 0, 0, 0.12);
+            --radius: 24px;
+            --radius-sm: 12px;
+            --transition: 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            background-image: radial-gradient(circle at 20% 30%, rgba(79, 110, 247, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(79, 110, 247, 0.04) 0%, transparent 50%);
+        }
+
+        /* ——— App Container ——— */
+        .app {
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 16px 0 30px;
+        }
+
+        /* ——— Header ——— */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding: 0 4px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--accent);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: -0.5px;
+            flex-shrink: 0;
+        }
+
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+
+        .header h1 span {
+            font-weight: 400;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            display: block;
+            margin-top: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge {
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+
+        /* ——— Progress Bar ——— */
+        .progress-wrap {
+            margin-bottom: 28px;
+            padding: 0 4px;
+        }
+
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .progress-meta .count {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 4px;
+            background: #e4e8f0;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), #7b93fa);
+            border-radius: 40px;
+            transition: width 0.4s ease;
+        }
+
+        /* ——— Flashcard ——— */
+        .card-wrapper {
+            perspective: 1200px;
+            margin-bottom: 32px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .card {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            background: transparent;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 32px;
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            transition: box-shadow 0.3s ease;
+            text-align: center;
+        }
+
+        .card-face:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-front {
+            z-index: 2;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            z-index: 1;
+        }
+
+        /* Card content */
+        .card-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .card-word {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .card-word small {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            letter-spacing: 0;
+            display: inline-block;
+            margin-left: 6px;
+        }
+
+        .card-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .card-hint svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-muted);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .card-back .card-word {
+            color: var(--accent);
+        }
+
+        .card-back .card-label {
+            color: var(--accent);
+        }
+
+        .card-back .card-hint {
+            opacity: 0.5;
+        }
+
+        /* ——— Navigation ——— */
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 60px;
+            font-family: var(--font);
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: all 0.25s ease;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            border: 1px solid transparent;
+            min-width: 48px;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(79, 110, 247, 0.25);
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 8px 24px rgba(79, 110, 247, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.96) translateY(0);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border-color: #e4e8f0;
+            color: var(--text-secondary);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .btn-icon {
+            padding: 12px;
+            width: 48px;
+            border-radius: 60px;
+            flex-shrink: 0;
+        }
+
+        .btn-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .btn-shuffle {
+            background: var(--accent-light);
+            color: var(--accent);
+            border-color: transparent;
+        }
+
+        .btn-shuffle:hover {
+            background: #d6defc;
+        }
+
+        /* ——— Footer ——— */
+        .footer {
+            margin-top: 36px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.2px;
+            padding: 0 4px;
+        }
+
+        .footer span {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        /* ——— Responsive ——— */
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            .app {
+                padding: 8px 0 20px;
+            }
+
+            .header h1 {
+                font-size: 1.05rem;
+            }
+            .header h1 span {
+                font-size: 0.75rem;
+            }
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 15px;
+            }
+
+            .card-word {
+                font-size: 2.1rem;
+            }
+            .card-word small {
+                font-size: 0.95rem;
+            }
+
+            .card-face {
+                padding: 28px 20px;
+            }
+
+            .btn {
+                padding: 10px 18px;
+                font-size: 0.8rem;
+            }
+            .btn-icon {
+                width: 44px;
+                padding: 10px;
+            }
+
+            .badge {
+                font-size: 0.65rem;
+                padding: 4px 12px;
+            }
+
+            .nav-controls {
+                gap: 8px;
+            }
+
+            .progress-meta {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .card-word {
+                font-size: 1.7rem;
+            }
+            .card-face {
+                padding: 20px 16px;
+            }
+            .btn {
+                padding: 8px 14px;
+                font-size: 0.75rem;
+            }
+            .btn-icon {
+                width: 38px;
+                padding: 8px;
+            }
+            .header h1 {
+                font-size: 0.9rem;
+            }
+            .logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 13px;
+            }
+        }
+
+        /* ——— Animations ——— */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-wrapper {
+            animation: fadeSlideUp 0.5s ease forwards;
+        }
+
+        /* ——— Utility ——— */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app" role="main">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo-icon" aria-hidden="true">DE</div>
+                <h1>
+                    Verbs
+                    <span>German · English</span>
+                </h1>
+            </div>
+            <div class="header-right">
+                <span class="badge" id="totalBadge">0</span>
+            </div>
+        </header>
+
+        <!-- Progress -->
+        <div class="progress-wrap">
+            <div class="progress-meta">
+                <span><span class="count" id="currentIndex">0</span> / <span id="totalCount">0</span></span>
+                <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Flashcard -->
+        <div class="card-wrapper" id="cardWrapper" role="button" tabindex="0" aria-label="Flashcard, tap to flip">
+            <div class="card" id="card">
+                <!-- Front: German -->
+                <div class="card-face card-front">
+                    <span class="card-label">🇩🇪 German</span>
+                    <div class="card-word" id="germanWord">—</div>
+                    <div class="card-hint">
+                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2v4M12 22v-4M4 12H2M22 12h-2M19.07 4.93l-2.83 2.83M4.93 19.07l2.83-2.83M19.07 19.07l-2.83-2.83M4.93 4.93l2.83 2.83" />
+                            <circle cx="12" cy="12" r="2" />
+                        </svg>
+                        <span>tap to reveal</span>
+                    </div>
+                </div>
+                <!-- Back: English -->
+                <div class="card-face card-back">
+                    <span class="card-label">🇬🇧 English</span>
+                    <div class="card-word" id="englishWord">—</div>
+                    <div class="card-hint">
+                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2v4M12 22v-4M4 12H2M22 12h-2M19.07 4.93l-2.83 2.83M4.93 19.07l2.83-2.83M19.07 19.07l-2.83-2.83M4.93 4.93l2.83 2.83" />
+                            <circle cx="12" cy="12" r="2" />
+                        </svg>
+                        <span>tap to flip back</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav-controls" aria-label="Card navigation">
+            <button class="btn btn-outline btn-icon" id="prevBtn" aria-label="Previous card">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
+            </button>
+
+            <button class="btn btn-outline" id="shuffleBtn" aria-label="Shuffle cards">
+                <svg viewBox="0 0 24 24" width="18" height="18" style="margin-right:4px;"><polyline points="16 3 21 3 21 8" /><line x1="4" y1="20" x2="21" y2="3" /><polyline points="21 16 21 21 16 21" /><line x1="15" y1="15" x2="21" y2="21" /><line x1="4" y1="4" x2="9" y2="9" /></svg>
+                Shuffle
+            </button>
+
+            <button class="btn btn-primary" id="nextBtn" aria-label="Next card">
+                Next
+                <svg viewBox="0 0 24 24" width="18" height="18"><polyline points="9 18 15 12 9 6" /></svg>
+            </button>
+        </nav>
+
+        <footer class="footer">
+            <span id="currentVerbLabel">—</span> &middot; tap the card to see the meaning
+        </footer>
+    </div>
+
+    <script>
+        // ——————————————————————————————————————
+        //  1.  DATA  –  German verbs with English meanings
+        // ——————————————————————————————————————
+
+        const verbs = [
+            { de: 'sein', en: 'to be' },
+            { de: 'haben', en: 'to have' },
+            { de: 'werden', en: 'to become' },
+            { de: 'können', en: 'can / to be able to' },
+            { de: 'müssen', en: 'must / to have to' },
+            { de: 'wollen', en: 'to want' },
+            { de: 'sollen', en: 'should / to be supposed to' },
+            { de: 'dürfen', en: 'may / to be allowed to' },
+            { de: 'mögen', en: 'to like' },
+            { de: 'gehen', en: 'to go' },
+            { de: 'kommen', en: 'to come' },
+            { de: 'sehen', en: 'to see' },
+            { de: 'hören', en: 'to hear' },
+            { de: 'sprechen', en: 'to speak' },
+            { de: 'sagen', en: 'to say' },
+            { de: 'machen', en: 'to do / to make' },
+            { de: 'geben', en: 'to give' },
+            { de: 'nehmen', en: 'to take' },
+            { de: 'wissen', en: 'to know' },
+            { de: 'denken', en: 'to think' },
+            { de: 'finden', en: 'to find' },
+            { de: 'bleiben', en: 'to stay' },
+            { de: 'liegen', en: 'to lie (down)' },
+            { de: 'sitzen', en: 'to sit' },
+            { de: 'stehen', en: 'to stand' },
+            { de: 'fahren', en: 'to drive / to go (by vehicle)' },
+            { de: 'fliegen', en: 'to fly' },
+            { de: 'laufen', en: 'to run / to walk' },
+            { de: 'schwimmen', en: 'to swim' },
+            { de: 'spielen', en: 'to play' },
+            { de: 'arbeiten', en: 'to work' },
+            { de: 'lernen', en: 'to learn' },
+            { de: 'studieren', en: 'to study' },
+            { de: 'verstehen', en: 'to understand' },
+            { de: 'schreiben', en: 'to write' },
+            { de: 'lesen', en: 'to read' },
+            { de: 'essen', en: 'to eat' },
+            { de: 'trinken', en: 'to drink' },
+            { de: 'schlafen', en: 'to sleep' },
+            { de: 'wachen', en: 'to wake' },
+            { de: 'helfen', en: 'to help' },
+            { de: 'danken', en: 'to thank' },
+            { de: 'lieben', en: 'to love' },
+            { de: 'hassen', en: 'to hate' },
+            { de: 'öffnen', en: 'to open' },
+            { de: 'schließen', en: 'to close' },
+            { de: 'kaufen', en: 'to buy' },
+            { de: 'verkaufen', en: 'to sell' },
+            { de: 'bauen', en: 'to build' },
+            { de: 'reparieren', en: 'to repair' }
+        ];
+
+        // ——————————————————————————————————————
+        //  2.  STATE
+        // ——————————————————————————————————————
+
+        let cards = [...verbs]; // current deck (shuffled copy)
+        let currentIndex = 0;
+        let isFlipped = false;
+
+        // DOM refs
+        const cardEl = document.getElementById('card');
+        const wrapper = document.getElementById('cardWrapper');
+        const germanWord = document.getElementById('germanWord');
+        const englishWord = document.getElementById('englishWord');
+        const currentIndexEl = document.getElementById('currentIndex');
+        const totalCountEl = document.getElementById('totalCount');
+        const totalBadge = document.getElementById('totalBadge');
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const currentVerbLabel = document.getElementById('currentVerbLabel');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+
+        // ——————————————————————————————————————
+        //  3.  RENDER
+        // ——————————————————————————————————————
+
+        function renderCard() {
+            const verb = cards[currentIndex];
+            if (!verb) return;
+
+            germanWord.textContent = verb.de;
+            englishWord.textContent = verb.en;
+
+            // Update counters
+            currentIndexEl.textContent = currentIndex + 1;
+            totalCountEl.textContent = cards.length;
+            totalBadge.textContent = cards.length;
+
+            // Progress
+            const pct = cards.length > 0 ? ((currentIndex + 1) / cards.length) * 100 : 0;
+            progressFill.style.width = pct + '%';
+            progressPercent.textContent = Math.round(pct) + '%';
+            document.querySelector('.progress-track').setAttribute('aria-valuenow', pct);
+
+            // Footer label
+            currentVerbLabel.textContent = verb.de;
+
+            // Ensure card is not flipped when changing
+            if (isFlipped) {
+                cardEl.classList.remove('flipped');
+                isFlipped = false;
+            }
+
+            // Re-trigger entrance animation
+            wrapper.style.animation = 'none';
+            requestAnimationFrame(() => {
+                wrapper.style.animation = 'fadeSlideUp 0.4s ease forwards';
+            });
+        }
+
+        // ——————————————————————————————————————
+        //  4.  ACTIONS
+        // ——————————————————————————————————————
+
+        function goTo(index) {
+            if (index < 0) index = cards.length - 1;
+            if (index >= cards.length) index = 0;
+            currentIndex = index;
+            renderCard();
+        }
+
+        function next() {
+            goTo(currentIndex + 1);
+        }
+
+        function prev() {
+            goTo(currentIndex - 1);
+        }
+
+        function shuffle() {
+            // Fisher–Yates
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+            currentIndex = 0;
+            renderCard();
+        }
+
+        function toggleFlip() {
+            isFlipped = !isFlipped;
+            cardEl.classList.toggle('flipped', isFlipped);
+        }
+
+        // ——————————————————————————————————————
+        //  5.  EVENT BINDING
+        // ——————————————————————————————————————
+
+        // Card click / tap
+        wrapper.addEventListener('click', toggleFlip);
+
+        // Keyboard: Space to flip, Arrow keys to navigate
+        wrapper.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleFlip();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                next();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prev();
+            } else if (e.key === 'r' || e.key === 'R') {
+                e.preventDefault();
+                shuffle();
+            }
+        });
+
+        // Buttons
+        nextBtn.addEventListener('click', next);
+        prevBtn.addEventListener('click', prev);
+        shuffleBtn.addEventListener('click', shuffle);
+
+        // ——————————————————————————————————————
+        //  6.  INIT
+        // ——————————————————————————————————————
+
+        // Start with a shuffled deck for variety
+        for (let i = cards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [cards[i], cards[j]] = [cards[j], cards[i]];
+        }
+        currentIndex = 0;
+        renderCard();
+    </script>
+
+</body>
+</html>
