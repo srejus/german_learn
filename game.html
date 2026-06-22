@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Verb Runner · German Learning Game</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ——— Reset & Base ——— */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0b0e17;
+            --card-bg: #161c2e;
+            --text-primary: #f0f4ff;
+            --text-secondary: #98a3c7;
+            --text-muted: #5b6a8f;
+            --accent: #6c8cff;
+            --accent-glow: rgba(108, 140, 255, 0.35);
+            --accent-light: #e8ecff;
+            --success: #4ade80;
+            --danger: #f87171;
+            --gold: #fbbf24;
+            --radius: 20px;
+            --radius-sm: 12px;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --shadow-glow: 0 0 60px rgba(108, 140, 255, 0.15);
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            margin: 0;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* ——— Game Container ——— */
+        .game-container {
+            width: 100%;
+            max-width: 520px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px 18px 24px;
+            box-shadow: var(--shadow-glow), 0 20px 60px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        /* ——— Background Road Animation ——— */
+        .road-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            border-radius: var(--radius);
+            pointer-events: none;
+        }
+        .road-bg .line {
+            position: absolute;
+            width: 4px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            animation: roadScroll 1.2s linear infinite;
+        }
+        @keyframes roadScroll {
+            0% {
+                transform: translateY(0);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(60px);
+                opacity: 0;
+            }
+        }
+        .road-bg .glow-spot {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(108, 140, 255, 0.06), transparent 70%);
+            width: 200px;
+            height: 200px;
+            animation: pulseGlow 3s ease-in-out infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0.8;
+                transform: scale(1.2);
+            }
+        }
+
+        /* ——— Header / Score ——— */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2px 16px;
+            position: relative;
+            z-index: 2;
+        }
+        .game-header .score-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .game-header .score-box {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 40px;
+            padding: 6px 16px 6px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(4px);
+        }
+        .game-header .score-box .icon {
+            font-size: 1.1rem;
+        }
+        .game-header .score-box .label {
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+        .game-header .score-box .value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            min-width: 28px;
+            text-align: center;
+        }
+        .game-header .score-box .value.gold {
+            color: var(--gold);
+        }
+
+        .game-header .high-score {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px 12px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .game-header .high-score span {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        /* ——— Speed Indicator ——— */
+        .speed-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+            padding: 0 2px 12px;
+        }
+        .speed-indicator .speed-label {
+            font-size: 0.55rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+        .speed-indicator .speed-bar {
+            flex: 1;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .speed-indicator .speed-bar .fill {
+            height: 100%;
+            width: 10%;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* ——— Runner ——— */
+        .runner-area {
+            position: relative;
+            z-index: 2;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 4px 0 8px;
+        }
+        .runner {
+            font-size: 4.2rem;
+            line-height: 1;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: translateY(0);
+            filter: drop-shadow(0 8px 30px rgba(108, 140, 255, 0.3));
+        }
+        .runner.jump {
+            animation: runnerJump 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes runnerJump {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+            40% {
+                transform: translateY(-55px) scale(1.1);
+            }
+            100% {
+                transform: translateY(0) scale(1);
+            }
+        }
+        .runner.shake {
+            animation: runnerShake 0.4s ease forwards;
+        }
+        @keyframes runnerShake {
+            0% {
+                transform: translateX(0) rotate(0deg);
+            }
+            20% {
+                transform: translateX(-12px) rotate(-8deg);
+            }
+            40% {
+                transform: translateX(10px) rotate(6deg);
+            }
+            60% {
+                transform: translateX(-6px) rotate(-4deg);
+            }
+            80% {
+                transform: translateX(4px) rotate(2deg);
+            }
+            100% {
+                transform: translateX(0) rotate(0deg);
+            }
+        }
+
+        /* ——— Verb Display ——— */
+        .verb-display {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 18px 0 14px;
+            margin: 2px 0 6px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .verb-display .german-verb {
+            font-size: 2.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            text-shadow: 0 0 40px rgba(108, 140, 255, 0.15);
+        }
+        .verb-display .hint-text {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* ——— Answer Options ——— */
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            position: relative;
+            z-index: 2;
+            padding: 12px 0 6px;
+        }
+        .option-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 2px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-sm);
+            padding: 16px 8px;
+            font-family: var(--font);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            overflow: hidden;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.3;
+        }
+        .option-btn:active {
+            transform: scale(0.96);
+        }
+        .option-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        .option-btn.correct {
+            background: rgba(74, 222, 128, 0.2);
+            border-color: var(--success);
+            animation: popCorrect 0.4s ease;
+        }
+        .option-btn.wrong {
+            background: rgba(248, 113, 113, 0.2);
+            border-color: var(--danger);
+            animation: popWrong 0.4s ease;
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .option-btn .emoji {
+            font-size: 1.2rem;
+            margin-right: 6px;
+        }
+        @keyframes popCorrect {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.04);
+                box-shadow: 0 0 30px rgba(74, 222, 128, 0.3);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        @keyframes popWrong {
+            0% {
+                transform: scale(1);
+            }
+            30% {
+                transform: translateX(-6px);
+            }
+            60% {
+                transform: translateX(6px);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        /* ——— Game Over Overlay ——— */
+        .game-over-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            background: rgba(11, 14, 23, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 24px;
+            text-align: center;
+            animation: fadeInOverlay 0.5s ease;
+        }
+        .game-over-overlay.active {
+            display: flex;
+        }
+        @keyframes fadeInOverlay {
+            from {
+                opacity: 0;
+                transform: scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .game-over-overlay .go-icon {
+            font-size: 4rem;
+            margin-bottom: 8px;
+        }
+        .game-over-overlay .go-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 2px;
+        }
+        .game-over-overlay .go-sub {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .game-over-overlay .go-score {
+            font-size: 2.6rem;
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 2px;
+        }
+        .game-over-overlay .go-score-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .game-over-overlay .go-best {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        .game-over-overlay .go-best span {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .btn-restart {
+            background: var(--accent);
+            border: none;
+            border-radius: 60px;
+            padding: 14px 40px;
+            font-family: var(--font);
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 24px rgba(108, 140, 255, 0.35);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-restart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 40px rgba(108, 140, 255, 0.45);
+        }
+        .btn-restart:active {
+            transform: scale(0.96);
+        }
+
+        /* ——— Streak / Combo ——— */
+        .streak-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 5;
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 40px;
+            padding: 4px 14px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--gold);
+            display: none;
+            backdrop-filter: blur(4px);
+            animation: streakPop 0.3s ease;
+        }
+        .streak-badge.active {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        @keyframes streakPop {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* ——— Particles (simple) ——— */
+        .particle-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 3;
+            overflow: hidden;
+            border-radius: var(--radius);
+        }
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gold);
+            animation: particleFly 0.8s ease-out forwards;
+        }
+        @keyframes particleFly {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
+        }
+
+        /* ——— Responsive ——— */
+        @media (max-width: 500px) {
+            .game-container {
+                padding: 14px 12px 18px;
+                border-radius: 16px;
+            }
+            .verb-display .german-verb {
+                font-size: 2rem;
+            }
+            .option-btn {
+                font-size: 0.85rem;
+                padding: 14px 6px;
+                min-height: 48px;
+            }
+            .runner {
+                font-size: 3.2rem;
+            }
+            .runner-area {
+                height: 80px;
+            }
+            .game-header .score-box {
+                padding: 4px 12px 4px 10px;
+            }
+            .game-header .score-box .value {
+                font-size: 0.95rem;
+            }
+            .game-over-overlay .go-score {
+                font-size: 2.2rem;
+            }
+            .game-over-overlay .go-title {
+                font-size: 1.4rem;
+            }
+            .options {
+                gap: 8px;
+            }
+            .btn-restart {
+                padding: 12px 32px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .verb-display .german-verb {
+                font-size: 1.6rem;
+            }
+            .option-btn {
+                font-size: 0.75rem;
+                padding: 10px 4px;
+                min-height: 40px;
+            }
+            .runner {
+                font-size: 2.6rem;
+            }
+            .runner-area {
+                height: 70px;
+            }
+            .game-header .score-box .value {
+                font-size: 0.8rem;
+                min-width: 20px;
+            }
+            .game-header .score-box .label {
+                font-size: 0.5rem;
+            }
+        }
+
+        @media (min-height: 800px) {
+            .runner-area {
+                height: 120px;
+            }
+            .runner {
+                font-size: 5rem;
+            }
+            .verb-display .german-verb {
+                font-size: 3.2rem;
+            }
+            .option-btn {
+                padding: 20px 12px;
+                font-size: 1.1rem;
+                min-height: 64px;
+            }
+        }
+
+        /* ——— Misc ——— */
+        .hidden {
+            display: none !important;
+        }
+        .text-glow {
+            text-shadow: 0 0 40px rgba(108, 140, 255, 0.2);
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="gameContainer">
+
+        <!-- Road Background -->
+        <div class="road-bg" id="roadBg">
+            <div class="glow-spot" style="top:10%;left:10%;"></div>
+            <div class="glow-spot" style="bottom:20%;right:5%;animation-delay:1.5s;"></div>
+        </div>
+
+        <!-- Streak Badge -->
+        <div class="streak-badge" id="streakBadge">
+            🔥 <span id="streakCount">0</span>x
+        </div>
+
+        <!-- Header -->
+        <div class="game-header">
+            <div class="score-wrap">
+                <div class="score-box">
+                    <span class="icon">⭐</span>
+                    <span class="label">Score</span>
+                    <span class="value" id="scoreDisplay">0</span>
+                </div>
+            </div>
+            <div class="high-score">
+                🏆 Best <span id="highScoreDisplay">0</span>
+            </div>
+        </div>
+
+        <!-- Speed -->
+        <div class="speed-indicator">
+            <span class="speed-label">⚡ Speed</span>
+            <div class="speed-bar">
+                <div class="fill" id="speedFill"></div>
+            </div>
+        </div>
+
+        <!-- Runner -->
+        <div class="runner-area">
+            <div class="runner" id="runner">🏃</div>
+        </div>
+
+        <!-- Verb Display -->
+        <div class="verb-display">
+            <div class="german-verb" id="germanVerb">—</div>
+            <div class="hint-text">🇩🇪 choose the correct translation</div>
+        </div>
+
+        <!-- Options -->
+        <div class="options" id="optionsContainer">
+            <button class="option-btn" data-index="0">—</button>
+            <button class="option-btn" data-index="1">—</button>
+            <button class="option-btn" data-index="2">—</button>
+            <button class="option-btn" data-index="3">—</button>
+        </div>
+
+        <!-- Particle Container -->
+        <div class="particle-container" id="particleContainer"></div>
+
+        <!-- Game Over -->
+        <div class="game-over-overlay" id="gameOverOverlay">
+            <div class="go-icon">💥</div>
+            <div class="go-title">Game Over</div>
+            <div class="go-sub">You ran out of stamina!</div>
+            <div class="go-score-label">Your Score</div>
+            <div class="go-score" id="finalScore">0</div>
+            <div class="go-best">🏆 Best: <span id="finalBest">0</span></div>
+            <button class="btn-restart" id="restartBtn">
+                🔄 Play Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ——————————————————————————————————————————————
+        //  1.  VERB DATA  –  all 100 verbs with conjugations
+        // ——————————————————————————————————————————————
+
+        function generateRegular(infinitive) {
+            let stem = infinitive.endsWith('en') ? infinitive.slice(0, -2) : infinitive;
+            if (infinitive === 'tun') {
+                return { ich: 'tue', du: 'tust', er: 'tut', wir: 'tun', ihr: 'tut', Sie: 'tun', partizipII: 'getan' };
+            }
+            const sEnd = /[sßzx]$/.test(stem);
+            const dEnd = /[dt]$/.test(stem);
+            const ich = stem + 'e';
+            const du = sEnd ? stem + 't' : stem + 'st';
+            const er = stem + 't';
+            const wir = stem + 'en';
+            const ihr = stem + 't';
+            const Sie = stem + 'en';
+            let pp = 'ge' + stem;
+            if (dEnd) pp += 'et';
+            else pp += 't';
+            return { ich, du, er, wir, ihr, Sie, partizipII: pp };
+        }
+
+        const irregularMap = {
+            'sein': { ich: 'bin', du: 'bist', er: 'ist', wir: 'sind', ihr: 'seid', Sie: 'sind', partizipII: 'gewesen' },
+            'haben': { ich: 'habe', du: 'hast', er: 'hat', wir: 'haben', ihr: 'habt', Sie: 'haben', partizipII: 'gehabt' },
+            'werden': { ich: 'werde', du: 'wirst', er: 'wird', wir: 'werden', ihr: 'werdet', Sie: 'werden',
+                partizipII: 'geworden' },
+            'können': { ich: 'kann', du: 'kannst', er: 'kann', wir: 'können', ihr: 'könnt', Sie: 'können',
+                partizipII: 'gekonnt' },
+            'müssen': { ich: 'muss', du: 'musst', er: 'muss', wir: 'müssen', ihr: 'müsst', Sie: 'müssen',
+                partizipII: 'gemusst' },
+            'wollen': { ich: 'will', du: 'willst', er: 'will', wir: 'wollen', ihr: 'wollt', Sie: 'wollen',
+                partizipII: 'gewollt' },
+            'sollen': { ich: 'soll', du: 'sollst', er: 'soll', wir: 'sollen', ihr: 'sollt', Sie: 'sollen',
+                partizipII: 'gesollt' },
+            'dürfen': { ich: 'darf', du: 'darfst', er: 'darf', wir: 'dürfen', ihr: 'dürft', Sie: 'dürfen',
+                partizipII: 'gedurft' },
+            'mögen': { ich: 'mag', du: 'magst', er: 'mag', wir: 'mögen', ihr: 'mögt', Sie: 'mögen', partizipII: 'gemocht' },
+            'gehen': { ich: 'gehe', du: 'gehst', er: 'geht', wir: 'gehen', ihr: 'geht', Sie: 'gehen',
+                partizipII: 'gegangen' },
+            'sehen': { ich: 'sehe', du: 'siehst', er: 'sieht', wir: 'sehen', ihr: 'seht', Sie: 'sehen',
+                partizipII: 'gesehen' },
+            'sprechen': { ich: 'spreche', du: 'sprichst', er: 'spricht', wir: 'sprechen', ihr: 'sprecht', Sie: 'sprechen',
+                partizipII: 'gesprochen' },
+            'geben': { ich: 'gebe', du: 'gibst', er: 'gibt', wir: 'geben', ihr: 'gebt', Sie: 'geben',
+                partizipII: 'gegeben' },
+            'nehmen': { ich: 'nehme', du: 'nimmst', er: 'nimmt', wir: 'nehmen', ihr: 'nehmt', Sie: 'nehmen',
+                partizipII: 'genommen' },
+            'wissen': { ich: 'weiß', du: 'weißt', er: 'weiß', wir: 'wissen', ihr: 'wisst', Sie: 'wissen',
+                partizipII: 'gewusst' },
+            'denken': { ich: 'denke', du: 'denkst', er: 'denkt', wir: 'denken', ihr: 'denkt', Sie: 'denken',
+                partizipII: 'gedacht' },
+            'finden': { ich: 'finde', du: 'findest', er: 'findet', wir: 'finden', ihr: 'findet', Sie: 'finden',
+                partizipII: 'gefunden' },
+            'bleiben': { ich: 'bleibe', du: 'bleibst', er: 'bleibt', wir: 'bleiben', ihr: 'bleibt', Sie: 'bleiben',
+                partizipII: 'geblieben' },
+            'liegen': { ich: 'liege', du: 'liegst', er: 'liegt', wir: 'liegen', ihr: 'liegt', Sie: 'liegen',
+                partizipII: 'gelegen' },
+            'sitzen': { ich: 'sitze', du: 'sitzt', er: 'sitzt', wir: 'sitzen', ihr: 'sitzt', Sie: 'sitzen',
+                partizipII: 'gesessen' },
+            'stehen': { ich: 'stehe', du: 'stehst', er: 'steht', wir: 'stehen', ihr: 'steht', Sie: 'stehen',
+                partizipII: 'gestanden' },
+            'fahren': { ich: 'fahre', du: 'fährst', er: 'fährt', wir: 'fahren', ihr: 'fahrt', Sie: 'fahren',
+                partizipII: 'gefahren' },
+            'fliegen': { ich: 'fliege', du: 'fliegst', er: 'fliegt', wir: 'fliegen', ihr: 'fliegt', Sie: 'fliegen',
+                partizipII: 'geflogen' },
+            'laufen': { ich: 'laufe', du: 'läufst', er: 'läuft', wir: 'laufen', ihr: 'lauft', Sie: 'laufen',
+                partizipII: 'gelaufen' },
+            'schwimmen': { ich: 'schwimme', du: 'schwimmst', er: 'schwimmt', wir: 'schwimmen', ihr: 'schwimmt',
+                Sie: 'schwimmen', partizipII: 'geschwommen' },
+            'essen': { ich: 'esse', du: 'isst', er: 'isst', wir: 'essen', ihr: 'esst', Sie: 'essen',
+                partizipII: 'gegessen' },
+            'trinken': { ich: 'trinke', du: 'trinkst', er: 'trinkt', wir: 'trinken', ihr: 'trinkt', Sie: 'trinken',
+                partizipII: 'getrunken' },
+            'schlafen': { ich: 'schlafe', du: 'schläfst', er: 'schläft', wir: 'schlafen', ihr: 'schlaft', Sie: 'schlafen',
+                partizipII: 'geschlafen' },
+            'helfen': { ich: 'helfe', du: 'hilfst', er: 'hilft', wir: 'helfen', ihr: 'helft', Sie: 'helfen',
+                partizipII: 'geholfen' },
+            'verstehen': { ich: 'verstehe', du: 'verstehst', er: 'versteht', wir: 'verstehen', ihr: 'versteht',
+                Sie: 'verstehen', partizipII: 'verstanden' },
+            'schreiben': { ich: 'schreibe', du: 'schreibst', er: 'schreibt', wir: 'schreiben', ihr: 'schreibt',
+                Sie: 'schreiben', partizipII: 'geschrieben' },
+            'lesen': { ich: 'lese', du: 'liest', er: 'liest', wir: 'lesen', ihr: 'lest', Sie: 'lesen',
+                partizipII: 'gelesen' },
+            'öffnen': { ich: 'öffne', du: 'öffnest', er: 'öffnet', wir: 'öffnen', ihr: 'öffnet', Sie: 'öffnen',
+                partizipII: 'geöffnet' },
+            'schließen': { ich: 'schließe', du: 'schließt', er: 'schließt', wir: 'schließen', ihr: 'schließt',
+                Sie: 'schließen', partizipII: 'geschlossen' },
+            'kaufen': { ich: 'kaufe', du: 'kaufst', er: 'kauft', wir: 'kaufen', ihr: 'kauft', Sie: 'kaufen',
+                partizipII: 'gekauft' },
+            'verkaufen': { ich: 'verkaufe', du: 'verkaufst', er: 'verkauft', wir: 'verkaufen', ihr: 'verkauft',
+                Sie: 'verkaufen', partizipII: 'verkauft' },
+            'bauen': { ich: 'baue', du: 'baust', er: 'baut', wir: 'bauen', ihr: 'baut', Sie: 'bauen',
+                partizipII: 'gebaut' },
+            'reparieren': { ich: 'repariere', du: 'reparierst', er: 'repariert', wir: 'reparieren', ihr: 'repariert',
+                Sie: 'reparieren', partizipII: 'repariert' },
+            'arbeiten': { ich: 'arbeite', du: 'arbeitest', er: 'arbeitet', wir: 'arbeiten', ihr: 'arbeitet',
+                Sie: 'arbeiten', partizipII: 'gearbeitet' },
+            'lernen': { ich: 'lerne', du: 'lernst', er: 'lernt', wir: 'lernen', ihr: 'lernt', Sie: 'lernen',
+                partizipII: 'gelernt' },
+            'studieren': { ich: 'studiere', du: 'studierst', er: 'studiert', wir: 'studieren', ihr: 'studiert',
+                Sie: 'studieren', partizipII: 'studiert' },
+            'wachen': { ich: 'wache', du: 'wachst', er: 'wacht', wir: 'wachen', ihr: 'wacht', Sie: 'wachen',
+                partizipII: 'gewacht' },
+            'danken': { ich: 'danke', du: 'dankst', er: 'dankt', wir: 'danken', ihr: 'dankt', Sie: 'danken',
+                partizipII: 'gedankt' },
+            'lieben': { ich: 'liebe', du: 'liebst', er: 'liebt', wir: 'lieben', ihr: 'liebt', Sie: 'lieben',
+                partizipII: 'geliebt' },
+            'hassen': { ich: 'hasse', du: 'hasst', er: 'hasst', wir: 'hassen', ihr: 'hasst', Sie: 'hassen',
+                partizipII: 'gehasst' },
+            'spielen': { ich: 'spiele', du: 'spielst', er: 'spielt', wir: 'spielen', ihr: 'spielt', Sie: 'spielen',
+                partizipII: 'gespielt' },
+            'sagen': { ich: 'sage', du: 'sagst', er: 'sagt', wir: 'sagen', ihr: 'sagt', Sie: 'sagen',
+                partizipII: 'gesagt' },
+            'machen': { ich: 'mache', du: 'machst', er: 'macht', wir: 'machen', ihr: 'macht', Sie: 'machen',
+                partizipII: 'gemacht' },
+            'kommen': { ich: 'komme', du: 'kommst', er: 'kommt', wir: 'kommen', ihr: 'kommt', Sie: 'kommen',
+                partizipII: 'gekommen' },
+            'hören': { ich: 'höre', du: 'hörst', er: 'hört', wir: 'hören', ihr: 'hört', Sie: 'hören',
+                partizipII: 'gehört' },
+            'anfangen': { ich: 'anfange', du: 'anfängst', er: 'anfängt', wir: 'anfangen', ihr: 'anfangt', Sie: 'anfangen',
+                partizipII: 'angefangen' },
+            'aufhören': { ich: 'aufhöre', du: 'aufhörst', er: 'aufhört', wir: 'aufhören', ihr: 'aufhört', Sie: 'aufhören',
+                partizipII: 'aufgehört' },
+            'aussehen': { ich: 'aussehe', du: 'aussiehst', er: 'aussieht', wir: 'aussehen', ihr: 'ausseht', Sie: 'aussehen',
+                partizipII: 'ausgesehen' },
+            'beginnen': { ich: 'beginne', du: 'beginnst', er: 'beginnt', wir: 'beginnen', ihr: 'beginnt', Sie: 'beginnen',
+                partizipII: 'begonnen' },
+            'bekommen': { ich: 'bekomme', du: 'bekommst', er: 'bekommt', wir: 'bekommen', ihr: 'bekommt', Sie: 'bekommen',
+                partizipII: 'bekommen' },
+            'beschreiben': { ich: 'beschreibe', du: 'beschreibst', er: 'beschreibt', wir: 'beschreiben',
+                ihr: 'beschreibt', Sie: 'beschreiben', partizipII: 'beschrieben' },
+            'besuchen': { ich: 'besuche', du: 'besuchst', er: 'besucht', wir: 'besuchen', ihr: 'besucht', Sie: 'besuchen',
+                partizipII: 'besucht' },
+            'bezahlen': { ich: 'bezahle', du: 'bezahlst', er: 'bezahlt', wir: 'bezahlen', ihr: 'bezahlt', Sie: 'bezahlen',
+                partizipII: 'bezahlt' },
+            'bringen': { ich: 'bringe', du: 'bringst', er: 'bringt', wir: 'bringen', ihr: 'bringt', Sie: 'bringen',
+                partizipII: 'gebracht' },
+            'empfehlen': { ich: 'empfehle', du: 'empfiehlst', er: 'empfiehlt', wir: 'empfehlen', ihr: 'empfehlt',
+                Sie: 'empfehlen', partizipII: 'empfohlen' },
+            'entdecken': { ich: 'entdecke', du: 'entdeckst', er: 'entdeckt', wir: 'entdecken', ihr: 'entdeckt',
+                Sie: 'entdecken', partizipII: 'entdeckt' },
+            'entscheiden': { ich: 'entscheide', du: 'entscheidest', er: 'entscheidet', wir: 'entscheiden',
+                ihr: 'entscheidet', Sie: 'entscheiden', partizipII: 'entschieden' },
+            'entwickeln': { ich: 'entwickle', du: 'entwickelst', er: 'entwickelt', wir: 'entwickeln', ihr: 'entwickelt',
+                Sie: 'entwickeln', partizipII: 'entwickelt' },
+            'erklären': { ich: 'erkläre', du: 'erklärst', er: 'erklärt', wir: 'erklären', ihr: 'erklärt', Sie: 'erklären',
+                partizipII: 'erklärt' },
+            'erlauben': { ich: 'erlaube', du: 'erlaubst', er: 'erlaubt', wir: 'erlauben', ihr: 'erlaubt', Sie: 'erlauben',
+                partizipII: 'erlaubt' },
+            'erzählen': { ich: 'erzähle', du: 'erzählst', er: 'erzählt', wir: 'erzählen', ihr: 'erzählt', Sie: 'erzählen',
+                partizipII: 'erzählt' },
+            'fallen': { ich: 'falle', du: 'fällst', er: 'fällt', wir: 'fallen', ihr: 'fallt', Sie: 'fallen',
+                partizipII: 'gefallen' },
+            'gewinnen': { ich: 'gewinne', du: 'gewinnst', er: 'gewinnt', wir: 'gewinnen', ihr: 'gewinnt', Sie: 'gewinnen',
+                partizipII: 'gewonnen' },
+            'halten': { ich: 'halte', du: 'hältst', er: 'hält', wir: 'halten', ihr: 'haltet', Sie: 'halten',
+                partizipII: 'gehalten' },
+            'hängen': { ich: 'hänge', du: 'hängst', er: 'hängt', wir: 'hängen', ihr: 'hängt', Sie: 'hängen',
+                partizipII: 'gehangen' },
+            'heißen': { ich: 'heiße', du: 'heißt', er: 'heißt', wir: 'heißen', ihr: 'heißt', Sie: 'heißen',
+                partizipII: 'geheißen' },
+            'kennen': { ich: 'kenne', du: 'kennst', er: 'kennt', wir: 'kennen', ihr: 'kennt', Sie: 'kennen',
+                partizipII: 'gekannt' },
+            'lassen': { ich: 'lasse', du: 'lässt', er: 'lässt', wir: 'lassen', ihr: 'lasst', Sie: 'lassen',
+                partizipII: 'gelassen' },
+            'rennen': { ich: 'renne', du: 'rennst', er: 'rennt', wir: 'rennen', ihr: 'rennt', Sie: 'rennen',
+                partizipII: 'gerannt' },
+            'scheinen': { ich: 'scheine', du: 'scheinst', er: 'scheint', wir: 'scheinen', ihr: 'scheint', Sie: 'scheinen',
+                partizipII: 'geschienen' },
+            'schneiden': { ich: 'schneide', du: 'schneidest', er: 'schneidet', wir: 'schneiden', ihr: 'schneidet',
+                Sie: 'schneiden', partizipII: 'geschnitten' },
+            'singen': { ich: 'singe', du: 'singst', er: 'singt', wir: 'singen', ihr: 'singt', Sie: 'singen',
+                partizipII: 'gesungen' },
+            'tragen': { ich: 'trage', du: 'trägst', er: 'trägt', wir: 'tragen', ihr: 'tragt', Sie: 'tragen',
+                partizipII: 'getragen' },
+            'treffen': { ich: 'treffe', du: 'triffst', er: 'trifft', wir: 'treffen', ihr: 'trefft', Sie: 'treffen',
+                partizipII: 'getroffen' },
+            'tun': { ich: 'tue', du: 'tust', er: 'tut', wir: 'tun', ihr: 'tut', Sie: 'tun', partizipII: 'getan' },
+            'überlegen': { ich: 'überlege', du: 'überlegst', er: 'überlegt', wir: 'überlegen', ihr: 'überlegt',
+                Sie: 'überlegen', partizipII: 'überlegt' },
+            'vergessen': { ich: 'vergesse', du: 'vergisst', er: 'vergisst', wir: 'vergessen', ihr: 'vergesst',
+                Sie: 'vergessen', partizipII: 'vergessen' },
+            'verlieren': { ich: 'verliere', du: 'verlierst', er: 'verliert', wir: 'verlieren', ihr: 'verliert',
+                Sie: 'verlieren', partizipII: 'verloren' },
+            'ziehen': { ich: 'ziehe', du: 'ziehst', er: 'zieht', wir: 'ziehen', ihr: 'zieht', Sie: 'ziehen',
+                partizipII: 'gezogen' },
+            'fragen': { ich: 'frage', du: 'fragst', er: 'fragt', wir: 'fragen', ihr: 'fragt', Sie: 'fragen',
+                partizipII: 'gefragt' },
+            'glauben': { ich: 'glaube', du: 'glaubst', er: 'glaubt', wir: 'glauben', ihr: 'glaubt', Sie: 'glauben',
+                partizipII: 'geglaubt' },
+            'passen': { ich: 'passe', du: 'passt', er: 'passt', wir: 'passen', ihr: 'passt', Sie: 'passen',
+                partizipII: 'gepasst' },
+            'planen': { ich: 'plane', du: 'planst', er: 'plant', wir: 'planen', ihr: 'plant', Sie: 'planen',
+                partizipII: 'geplant' },
+            'reden': { ich: 'rede', du: 'redest', er: 'redet', wir: 'reden', ihr: 'redet', Sie: 'reden',
+                partizipII: 'geredet' },
+            'reisen': { ich: 'reise', du: 'reist', er: 'reist', wir: 'reisen', ihr: 'reist', Sie: 'reisen',
+                partizipII: 'gereist' },
+            'schauen': { ich: 'schaue', du: 'schaust', er: 'schaut', wir: 'schauen', ihr: 'schaut', Sie: 'schauen',
+                partizipII: 'geschaut' },
+            'schicken': { ich: 'schicke', du: 'schickst', er: 'schickt', wir: 'schicken', ihr: 'schickt', Sie: 'schicken',
+                partizipII: 'geschickt' },
+            'suchen': { ich: 'suche', du: 'suchst', er: 'sucht', wir: 'suchen', ihr: 'sucht', Sie: 'suchen',
+                partizipII: 'gesucht' },
+            'warten': { ich: 'warte', du: 'wartest', er: 'wartet', wir: 'warten', ihr: 'wartet', Sie: 'warten',
+                partizipII: 'gewartet' },
+            'wohnen': { ich: 'wohne', du: 'wohnst', er: 'wohnt', wir: 'wohnen', ihr: 'wohnt', Sie: 'wohnen',
+                partizipII: 'gewohnt' },
+            'zeigen': { ich: 'zeige', du: 'zeigst', er: 'zeigt', wir: 'zeigen', ihr: 'zeigt', Sie: 'zeigen',
+                partizipII: 'gezeigt' },
+            'brauchen': { ich: 'brauche', du: 'brauchst', er: 'braucht', wir: 'brauchen', ihr: 'braucht', Sie: 'brauchen',
+                partizipII: 'gebraucht' },
+            'feiern': { ich: 'feiere', du: 'feierst', er: 'feiert', wir: 'feiern', ihr: 'feiert', Sie: 'feiern',
+                partizipII: 'gefeiert' },
+            'grüßen': { ich: 'grüße', du: 'grüßt', er: 'grüßt', wir: 'grüßen', ihr: 'grüßt', Sie: 'grüßen',
+                partizipII: 'gegrüßt' }
+        };
+
+        const baseVerbs = [
+            { de: 'sein', en: 'to be' },
+            { de: 'haben', en: 'to have' },
+            { de: 'werden', en: 'to become' },
+            { de: 'können', en: 'can' },
+            { de: 'müssen', en: 'must' },
+            { de: 'wollen', en: 'to want' },
+            { de: 'sollen', en: 'should' },
+            { de: 'dürfen', en: 'may' },
+            { de: 'mögen', en: 'to like' },
+            { de: 'gehen', en: 'to go' },
+            { de: 'kommen', en: 'to come' },
+            { de: 'sehen', en: 'to see' },
+            { de: 'hören', en: 'to hear' },
+            { de: 'sprechen', en: 'to speak' },
+            { de: 'sagen', en: 'to say' },
+            { de: 'machen', en: 'to do' },
+            { de: 'geben', en: 'to give' },
+            { de: 'nehmen', en: 'to take' },
+            { de: 'wissen', en: 'to know' },
+            { de: 'denken', en: 'to think' },
+            { de: 'finden', en: 'to find' },
+            { de: 'bleiben', en: 'to stay' },
+            { de: 'liegen', en: 'to lie' },
+            { de: 'sitzen', en: 'to sit' },
+            { de: 'stehen', en: 'to stand' },
+            { de: 'fahren', en: 'to drive' },
+            { de: 'fliegen', en: 'to fly' },
+            { de: 'laufen', en: 'to run' },
+            { de: 'schwimmen', en: 'to swim' },
+            { de: 'spielen', en: 'to play' },
+            { de: 'arbeiten', en: 'to work' },
+            { de: 'lernen', en: 'to learn' },
+            { de: 'studieren', en: 'to study' },
+            { de: 'verstehen', en: 'to understand' },
+            { de: 'schreiben', en: 'to write' },
+            { de: 'lesen', en: 'to read' },
+            { de: 'essen', en: 'to eat' },
+            { de: 'trinken', en: 'to drink' },
+            { de: 'schlafen', en: 'to sleep' },
+            { de: 'wachen', en: 'to wake' },
+            { de: 'helfen', en: 'to help' },
+            { de: 'danken', en: 'to thank' },
+            { de: 'lieben', en: 'to love' },
+            { de: 'hassen', en: 'to hate' },
+            { de: 'öffnen', en: 'to open' },
+            { de: 'schließen', en: 'to close' },
+            { de: 'kaufen', en: 'to buy' },
+            { de: 'verkaufen', en: 'to sell' },
+            { de: 'bauen', en: 'to build' },
+            { de: 'reparieren', en: 'to repair' },
+            { de: 'anfangen', en: 'to start' },
+            { de: 'aufhören', en: 'to stop' },
+            { de: 'aussehen', en: 'to look' },
+            { de: 'beginnen', en: 'to begin' },
+            { de: 'bekommen', en: 'to get' },
+            { de: 'beschreiben', en: 'to describe' },
+            { de: 'besuchen', en: 'to visit' },
+            { de: 'bezahlen', en: 'to pay' },
+            { de: 'bringen', en: 'to bring' },
+            { de: 'empfehlen', en: 'to recommend' },
+            { de: 'entdecken', en: 'to discover' },
+            { de: 'entscheiden', en: 'to decide' },
+            { de: 'entwickeln', en: 'to develop' },
+            { de: 'erklären', en: 'to explain' },
+            { de: 'erlauben', en: 'to allow' },
+            { de: 'erzählen', en: 'to tell' },
+            { de: 'fallen', en: 'to fall' },
+            { de: 'fragen', en: 'to ask' },
+            { de: 'gewinnen', en: 'to win' },
+            { de: 'glauben', en: 'to believe' },
+            { de: 'halten', en: 'to hold' },
+            { de: 'hängen', en: 'to hang' },
+            { de: 'heißen', en: 'to be called' },
+            { de: 'kennen', en: 'to know (person)' },
+            { de: 'lassen', en: 'to let' },
+            { de: 'passen', en: 'to fit' },
+            { de: 'planen', en: 'to plan' },
+            { de: 'reden', en: 'to talk' },
+            { de: 'reisen', en: 'to travel' },
+            { de: 'rennen', en: 'to dash' },
+            { de: 'schauen', en: 'to look' },
+            { de: 'scheinen', en: 'to seem' },
+            { de: 'schicken', en: 'to send' },
+            { de: 'schneiden', en: 'to cut' },
+            { de: 'singen', en: 'to sing' },
+            { de: 'suchen', en: 'to search' },
+            { de: 'tragen', en: 'to carry' },
+            { de: 'treffen', en: 'to meet' },
+            { de: 'tun', en: 'to do' },
+            { de: 'überlegen', en: 'to consider' },
+            { de: 'vergessen', en: 'to forget' },
+            { de: 'verlieren', en: 'to lose' },
+            { de: 'warten', en: 'to wait' },
+            { de: 'wohnen', en: 'to live' },
+            { de: 'zeigen', en: 'to show' },
+            { de: 'ziehen', en: 'to pull' },
+            { de: 'brauchen', en: 'to need' },
+            { de: 'feiern', en: 'to celebrate' },
+            { de: 'grüßen', en: 'to greet' }
+        ];
+
+        function buildVerbList() {
+            return baseVerbs.map(item => {
+                const inf = item.de;
+                let conj;
+                if (irregularMap[inf]) {
+                    const irr = irregularMap[inf];
+                    conj = { ich: irr.ich, du: irr.du, er: irr.er, wir: irr.wir, ihr: irr.ihr, Sie: irr.Sie,
+                        partizipII: irr.partizipII };
+                } else {
+                    const reg = generateRegular(inf);
+                    conj = { ich: reg.ich, du: reg.du, er: reg.er, wir: reg.wir, ihr: reg.ihr, Sie: reg.Sie,
+                        partizipII: reg.partizipII };
+                }
+                return { de: inf, en: item.en };
+            });
+        }
+
+        const allVerbs = buildVerbList();
+
+        // ——————————————————————————————————————————————
+        //  2.  GAME STATE
+        // ——————————————————————————————————————————————
+
+        let score = 0;
+        let highScore = parseInt(localStorage.getItem('verbRunnerHighScore')) || 0;
+        let streak = 0;
+        let currentVerb = null;
+        let correctAnswer = '';
+        let isPlaying = false;
+        let isGameOver = false;
+        let speedLevel = 1;
+        let timer = null;
+        let optionsLocked = false;
+
+        // DOM refs
+        const germanVerbEl = document.getElementById('germanVerb');
+        const optionsBtns = document.querySelectorAll('.option-btn');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const highScoreDisplay = document.getElementById('highScoreDisplay');
+        const speedFill = document.getElementById('speedFill');
+        const runner = document.getElementById('runner');
+        const gameOverOverlay = document.getElementById('gameOverOverlay');
+        const finalScore = document.getElementById('finalScore');
+        const finalBest = document.getElementById('finalBest');
+        const restartBtn = document.getElementById('restartBtn');
+        const streakBadge = document.getElementById('streakBadge');
+        const streakCount = document.getElementById('streakCount');
+        const particleContainer = document.getElementById('particleContainer');
+
+        // ——————————————————————————————————————————————
+        //  3.  GAME FUNCTIONS
+        // ——————————————————————————————————————————————
+
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function getRandomVerb() {
+            return allVerbs[Math.floor(Math.random() * allVerbs.length)];
+        }
+
+        function getRandomWrongAnswer(correct) {
+            const others = allVerbs.filter(v => v.en !== correct);
+            if (others.length === 0) return '???';
+            return others[Math.floor(Math.random() * others.length)].en;
+        }
+
+        function generateOptions(correct) {
+            let options = [correct];
+            while (options.length < 4) {
+                const wrong = getRandomWrongAnswer(correct);
+                if (!options.includes(wrong)) {
+                    options.push(wrong);
+                }
+            }
+            return shuffleArray(options);
+        }
+
+        function spawnVerb() {
+            if (isGameOver) return;
+
+            currentVerb = getRandomVerb();
+            correctAnswer = currentVerb.en;
+            germanVerbEl.textContent = currentVerb.de;
+
+            const options = generateOptions(correctAnswer);
+            optionsBtns.forEach((btn, i) => {
+                btn.textContent = options[i] || '—';
+                btn.className = 'option-btn';
+                btn.disabled = false;
+                btn.dataset.correct = (options[i] === correctAnswer) ? 'true' : 'false';
+            });
+
+            optionsLocked = false;
+        }
+
+        function handleAnswer(btn) {
+            if (optionsLocked || isGameOver || !isPlaying) return;
+            optionsLocked = true;
+
+            const isCorrect = btn.dataset.correct === 'true';
+
+            // Disable all buttons
+            optionsBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+                score++;
+                streak++;
+                updateScoreUI();
+
+                // Runner jump
+                runner.classList.remove('jump');
+                void runner.offsetWidth;
+                runner.classList.add('jump');
+
+                // Particles
+                spawnParticles(btn, '#4ade80');
+
+                // Streak
+                if (streak >= 3) {
+                    streakBadge.classList.add('active');
+                    streakCount.textContent = streak;
+                }
+
+                // Speed up
+                speedLevel = Math.min(10, 1 + Math.floor(score / 5));
+                updateSpeedUI();
+
+                // Spawn next after delay
+                setTimeout(() => {
+                    if (!isGameOver) {
+                        spawnVerb();
+                    }
+                }, 320);
+
+            } else {
+                btn.classList.add('wrong');
+                runner.classList.remove('shake');
+                void runner.offsetWidth;
+                runner.classList.add('shake');
+                streak = 0;
+                streakBadge.classList.remove('active');
+
+                // Show correct answer
+                optionsBtns.forEach(b => {
+                    if (b.dataset.correct === 'true') {
+                        b.classList.add('correct');
+                    }
+                });
+
+                // Game over after delay
+                setTimeout(() => {
+                    endGame();
+                }, 500);
+            }
+        }
+
+        function spawnParticles(btn, color) {
+            const rect = btn.getBoundingClientRect();
+            const containerRect = particleContainer.getBoundingClientRect();
+            const cx = rect.left - containerRect.left + rect.width / 2;
+            const cy = rect.top - containerRect.top + rect.height / 2;
+
+            for (let i = 0; i < 12; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 40 + Math.random() * 80;
+                const tx = Math.cos(angle) * dist;
+                const ty = Math.sin(angle) * dist - 30;
+                p.style.cssText = `
+                        left: ${cx}px;
+                        top: ${cy}px;
+                        background: ${color};
+                        width: ${4 + Math.random() * 8}px;
+                        height: ${4 + Math.random() * 8}px;
+                        --tx: ${tx}px;
+                        --ty: ${ty}px;
+                        animation-duration: ${0.5 + Math.random() * 0.4}s;
+                    `;
+                particleContainer.appendChild(p);
+                setTimeout(() => p.remove(), 1000);
+            }
+        }
+
+        function updateScoreUI() {
+            scoreDisplay.textContent = score;
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('verbRunnerHighScore', highScore);
+                highScoreDisplay.textContent = highScore;
+            }
+        }
+
+        function updateSpeedUI() {
+            const pct = Math.min(100, (speedLevel / 10) * 100);
+            speedFill.style.width = pct + '%';
+        }
+
+        function endGame() {
+            isGameOver = true;
+            isPlaying = false;
+            clearTimeout(timer);
+
+            finalScore.textContent = score;
+            finalBest.textContent = highScore;
+            gameOverOverlay.classList.add('active');
+
+            optionsBtns.forEach(b => b.disabled = true);
+        }
+
+        function startGame() {
+            // Reset state
+            score = 0;
+            streak = 0;
+            speedLevel = 1;
+            isGameOver = false;
+            isPlaying = true;
+            optionsLocked = false;
+
+            gameOverOverlay.classList.remove('active');
+            streakBadge.classList.remove('active');
+
+            // Reset UI
+            updateScoreUI();
+            updateSpeedUI();
+            highScoreDisplay.textContent = highScore;
+            runner.className = 'runner';
+
+            // Clear particles
+            particleContainer.innerHTML = '';
+
+            // Spawn first verb
+            spawnVerb();
+        }
+
+        // ——————————————————————————————————————————————
+        //  4.  EVENT BINDING
+        // ——————————————————————————————————————————————
+
+        optionsBtns.forEach(btn => {
+            btn.addEventListener('click', () => handleAnswer(btn));
+            btn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                handleAnswer(btn);
+            });
+        });
+
+        restartBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            startGame();
+        });
+
+        // Keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '1' && e.key <= '4') {
+                const idx = parseInt(e.key) - 1;
+                if (optionsBtns[idx] && !optionsBtns[idx].disabled) {
+                    handleAnswer(optionsBtns[idx]);
+                }
+            }
+            if (e.key === 'r' || e.key === 'R') {
+                if (isGameOver) startGame();
+            }
+            if (e.key === ' ' && isGameOver) {
+                e.preventDefault();
+                startGame();
+            }
+        });
+
+        // ——————————————————————————————————————————————
+        //  5.  ROAD BACKGROUND ANIMATION
+        // ——————————————————————————————————————————————
+
+        function createRoadLines() {
+            const bg = document.getElementById('roadBg');
+            for (let i = 0; i < 14; i++) {
+                const line = document.createElement('div');
+                line.className = 'line';
+                line.style.left = (10 + Math.random() * 80) + '%';
+                line.style.top = (Math.random() * 100) + '%';
+                line.style.animationDelay = (Math.random() * 1.2) + 's';
+                line.style.animationDuration = (0.8 + Math.random() * 0.6) + 's';
+                bg.appendChild(line);
+            }
+        }
+        createRoadLines();
+
+        // ——————————————————————————————————————————————
+        //  6.  INIT
+        // ——————————————————————————————————————————————
+
+        highScoreDisplay.textContent = highScore;
+        startGame();
+
+        // Handle visibility change – pause/resume not needed but keep clean
+        document.addEventListener('visibilitychange', () => {
+            // Nothing special needed
+        });
+
+        console.log('🏃 Verb Runner loaded! 100 verbs ready.');
+        console.log('📖 Tap the correct English translation. Speed increases with your score!');
+        console.log('⌨️  Keys 1-4 to answer, R to restart.');
+    </script>
+
+</body>
+</html>
