@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>German Verbs · Conjugation Flashcards</title>
-<link rel="icon" type="image/svg+xml" href="https://loginpress.pro/wp-content/themes/wp-loginpress-pro-theme/assets/img/learndash-int-logo.svg">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -169,7 +168,7 @@
         .card {
             position: relative;
             width: 100%;
-            aspect-ratio: 16 / 11;
+            aspect-ratio: 16 / 12;
             transform-style: preserve-3d;
             transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             border-radius: var(--radius);
@@ -189,12 +188,12 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 32px 28px;
+            padding: 28px 24px;
             background: var(--card-bg);
             box-shadow: var(--shadow);
             transition: box-shadow 0.3s ease;
             text-align: center;
-            overflow-y: auto;
+            overflow: hidden;
         }
         .card-face:hover {
             box-shadow: var(--shadow-hover);
@@ -206,13 +205,14 @@
         .card-back {
             transform: rotateY(180deg);
             z-index: 1;
-            padding: 24px 20px;
+            padding: 24px 20px 20px;
             align-items: stretch;
             justify-content: flex-start;
-            gap: 4px;
+            gap: 0;
+            overflow: hidden;
         }
 
-        /* Front */
+        /* ——— Front ——— */
         .card-front .card-word {
             font-size: 3rem;
             font-weight: 700;
@@ -245,86 +245,144 @@
             stroke-width: 2;
         }
 
-        /* Back */
-        .card-back .back-header {
+        /* ——— Back ——— */
+        .card-back-scroll {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 4px;
+            width: 100%;
             display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            border-bottom: 1px solid #eef1f6;
-            padding-bottom: 8px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-            gap: 4px;
+            flex-direction: column;
+            gap: 8px;
+            scroll-behavior: smooth;
         }
-        .card-back .back-header .en-word {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--accent);
+        .card-back-scroll::-webkit-scrollbar {
+            width: 3px;
         }
-        .card-back .back-header .label {
-            font-size: 0.65rem;
+        .card-back-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .card-back-scroll::-webkit-scrollbar-thumb {
+            background: #d0d5e0;
+            border-radius: 20px;
+        }
+
+        /* English meaning — big & prominent */
+        .back-english {
+            text-align: center;
+            padding: 6px 0 10px;
+            border-bottom: 2px solid var(--accent-light);
+            flex-shrink: 0;
+        }
+        .back-english .label {
+            font-size: 0.6rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.8px;
             color: var(--text-muted);
+            display: block;
+            margin-bottom: 2px;
+        }
+        .back-english .en-word {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: -0.3px;
+            line-height: 1.2;
         }
 
-        /* ——— Clean Table for Conjugations ——— */
-        .conj-table-wrap {
+        /* Conjugations — clean table */
+        .back-conj {
+            flex-shrink: 0;
             width: 100%;
-            margin: 4px 0 6px;
+            padding: 6px 0 4px;
+        }
+        .back-conj .conj-label {
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 4px;
+            text-align: center;
         }
 
         .conj-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
-
         .conj-table th {
             text-align: left;
             font-weight: 600;
             color: var(--text-secondary);
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 4px 0;
+            letter-spacing: 0.4px;
+            padding: 3px 0 4px;
             border-bottom: 1px solid #eef1f6;
         }
-
         .conj-table td {
-            padding: 6px 0;
+            padding: 4px 0;
             border-bottom: 1px solid #f4f6fa;
+            font-size: 0.85rem;
         }
-
+        .conj-table td:first-child {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.78rem;
+        }
         .conj-table td:last-child {
             font-weight: 600;
             color: var(--text-primary);
         }
-
         .conj-table tr:last-child td {
             border-bottom: none;
         }
 
-        /* ——— Partizip II ——— */
-        .partizip-wrap {
-            margin-top: 8px;
-            padding-top: 8px;
+        /* Partizip II — clean footer */
+        .back-partizip {
+            flex-shrink: 0;
+            text-align: center;
+            padding: 8px 0 2px;
             border-top: 1px solid #eef1f6;
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            flex-wrap: wrap;
+            margin-top: 2px;
         }
-        .partizip-wrap strong {
-            color: var(--text-primary);
+        .back-partizip .pp-label {
+            font-size: 0.6rem;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-muted);
+            display: inline-block;
+            margin-right: 8px;
         }
-        .partizip-wrap .pp {
-            font-weight: 600;
+        .back-partizip .pp-value {
+            font-weight: 700;
             color: var(--accent);
+            font-size: 0.95rem;
+        }
+
+        /* Scroll hint (subtle) */
+        .scroll-hint {
+            text-align: center;
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            opacity: 0.5;
+            padding: 2px 0 0;
+            flex-shrink: 0;
+            letter-spacing: 0.3px;
+        }
+        .scroll-hint svg {
+            width: 12px;
+            height: 12px;
+            stroke: var(--text-muted);
+            fill: none;
+            stroke-width: 2;
+            vertical-align: middle;
+            margin-right: 4px;
         }
 
         /* ——— Navigation ——— */
@@ -443,11 +501,18 @@
             .card-front .card-word {
                 font-size: 2.2rem;
             }
-            .card-back .back-header .en-word {
-                font-size: 1.2rem;
+            .back-english .en-word {
+                font-size: 1.8rem;
             }
             .conj-table {
-                font-size: 0.8rem;
+                font-size: 0.78rem;
+            }
+            .conj-table td {
+                font-size: 0.78rem;
+                padding: 3px 0;
+            }
+            .conj-table td:first-child {
+                font-size: 0.72rem;
             }
             .card-face {
                 padding: 20px 16px;
@@ -473,17 +538,27 @@
             .progress-meta {
                 font-size: 0.7rem;
             }
+            .card {
+                aspect-ratio: 16 / 13;
+            }
         }
 
         @media (max-width: 400px) {
             .card-front .card-word {
                 font-size: 1.8rem;
             }
-            .card-back .back-header .en-word {
-                font-size: 1rem;
+            .back-english .en-word {
+                font-size: 1.5rem;
             }
             .conj-table {
                 font-size: 0.7rem;
+            }
+            .conj-table td {
+                font-size: 0.7rem;
+                padding: 2px 0;
+            }
+            .conj-table td:first-child {
+                font-size: 0.65rem;
             }
             .card-face {
                 padding: 14px 12px;
@@ -498,6 +573,9 @@
             .btn-icon {
                 width: 38px;
                 padding: 8px;
+            }
+            .card {
+                aspect-ratio: 16 / 14;
             }
         }
 
@@ -525,18 +603,6 @@
             overflow: hidden;
             clip: rect(0, 0, 0, 0);
             border: 0;
-        }
-
-        /* scrollable back */
-        .card-back::-webkit-scrollbar {
-            width: 3px;
-        }
-        .card-back::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .card-back::-webkit-scrollbar-thumb {
-            background: #d0d5e0;
-            border-radius: 20px;
         }
     </style>
 </head>
@@ -582,32 +648,42 @@
                     </div>
                 </div>
 
-                <!-- BACK: English + conjugations + Partizip II -->
+                <!-- BACK: English (prominent) + conjugations below -->
                 <div class="card-face card-back" id="cardBack">
-                    <div class="back-header">
-                        <span class="label">🇬🇧 English</span>
-                        <span class="en-word" id="englishWord">—</span>
-                    </div>
+                    <div class="card-back-scroll" id="backScroll">
+                        <!-- English meaning — big & prominent -->
+                        <div class="back-english">
+                            <span class="label">🇬🇧 English</span>
+                            <div class="en-word" id="englishWord">—</div>
+                        </div>
 
-                    <!-- Clean Table for Conjugations -->
-                    <div class="conj-table-wrap">
-                        <table class="conj-table">
-                            <thead>
-                                <tr>
-                                    <th>Pronomen</th>
-                                    <th>Konjugation</th>
-                                </tr>
-                            </thead>
-                            <tbody id="conjBody">
-                                <!-- JavaScript renders rows -->
-                            </tbody>
-                        </table>
-                    </div>
+                        <!-- Conjugations — clean table -->
+                        <div class="back-conj">
+                            <span class="conj-label">Konjugation</span>
+                            <table class="conj-table">
+                                <thead>
+                                    <tr>
+                                        <th>Pronomen</th>
+                                        <th>Form</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="conjBody">
+                                    <!-- JS renders -->
+                                </tbody>
+                            </table>
+                        </div>
 
-                    <!-- Partizip II -->
-                    <div class="partizip-wrap">
-                        <span>Partizip II</span>
-                        <strong class="pp" id="partizipII">—</strong>
+                        <!-- Partizip II -->
+                        <div class="back-partizip">
+                            <span class="pp-label">Partizip II</span>
+                            <span class="pp-value" id="partizipII">—</span>
+                        </div>
+
+                        <!-- Scroll hint (only shows if content overflows) -->
+                        <div class="scroll-hint" id="scrollHint">
+                            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>scroll for more</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -635,49 +711,31 @@
 
     <script>
         // ——————————————————————————————————————————————
-        //  1.  DATA  –  verbs with conjugations & Partizip II
+        //  1.  DATA  –  100 verbs with conjugations & Partizip II
         // ——————————————————————————————————————————————
 
-        // ----- helper: generate regular conjugations -----
         function generateRegular(infinitive) {
             let stem = infinitive.endsWith('en') ? infinitive.slice(0, -2) : infinitive;
-            // handle verbs ending with -n (like tun)
             if (infinitive === 'tun') {
-                return {
-                    ich: 'tue',
-                    du: 'tust',
-                    er: 'tut',
-                    wir: 'tun',
-                    ihr: 'tut',
-                    Sie: 'tun',
-                    partizipII: 'getan'
-                };
+                return { ich: 'tue', du: 'tust', er: 'tut', wir: 'tun', ihr: 'tut', Sie: 'tun', partizipII: 'getan' };
             }
-
-            // Stem ending with s/ss/ß/z/x -> du gets +t instead of +st
             const sEnd = /[sßzx]$/.test(stem);
             const dEnd = /[dt]$/.test(stem);
-
             const ich = stem + 'e';
             const du = sEnd ? stem + 't' : stem + 'st';
             const er = stem + 't';
             const wir = stem + 'en';
             const ihr = stem + 't';
             const Sie = stem + 'en';
-
-            // Partizip II: ge + stem + (t / et)
             let pp = 'ge' + stem;
             if (dEnd) pp += 'et';
             else pp += 't';
-
             return { ich, du, er, wir, ihr, Sie, partizipII: pp };
         }
 
-        // ----- irregular conjugations map -----
         const irregularMap = {
             'sein': { ich: 'bin', du: 'bist', er: 'ist', wir: 'sind', ihr: 'seid', Sie: 'sind', partizipII: 'gewesen' },
-            'haben': { ich: 'habe', du: 'hast', er: 'hat', wir: 'haben', ihr: 'habt', Sie: 'haben',
-                partizipII: 'gehabt' },
+            'haben': { ich: 'habe', du: 'hast', er: 'hat', wir: 'haben', ihr: 'habt', Sie: 'haben', partizipII: 'gehabt' },
             'werden': { ich: 'werde', du: 'wirst', er: 'wird', wir: 'werden', ihr: 'werdet', Sie: 'werden',
                 partizipII: 'geworden' },
             'können': { ich: 'kann', du: 'kannst', er: 'kann', wir: 'können', ihr: 'könnt', Sie: 'können',
@@ -773,9 +831,105 @@
                 partizipII: 'gekommen' },
             'hören': { ich: 'höre', du: 'hörst', er: 'hört', wir: 'hören', ihr: 'hört', Sie: 'hören',
                 partizipII: 'gehört' },
+            'anfangen': { ich: 'anfange', du: 'anfängst', er: 'anfängt', wir: 'anfangen', ihr: 'anfangt', Sie: 'anfangen',
+                partizipII: 'angefangen' },
+            'aufhören': { ich: 'aufhöre', du: 'aufhörst', er: 'aufhört', wir: 'aufhören', ihr: 'aufhört', Sie: 'aufhören',
+                partizipII: 'aufgehört' },
+            'aussehen': { ich: 'aussehe', du: 'aussiehst', er: 'aussieht', wir: 'aussehen', ihr: 'ausseht', Sie: 'aussehen',
+                partizipII: 'ausgesehen' },
+            'beginnen': { ich: 'beginne', du: 'beginnst', er: 'beginnt', wir: 'beginnen', ihr: 'beginnt', Sie: 'beginnen',
+                partizipII: 'begonnen' },
+            'bekommen': { ich: 'bekomme', du: 'bekommst', er: 'bekommt', wir: 'bekommen', ihr: 'bekommt', Sie: 'bekommen',
+                partizipII: 'bekommen' },
+            'beschreiben': { ich: 'beschreibe', du: 'beschreibst', er: 'beschreibt', wir: 'beschreiben',
+                ihr: 'beschreibt', Sie: 'beschreiben', partizipII: 'beschrieben' },
+            'besuchen': { ich: 'besuche', du: 'besuchst', er: 'besucht', wir: 'besuchen', ihr: 'besucht', Sie: 'besuchen',
+                partizipII: 'besucht' },
+            'bezahlen': { ich: 'bezahle', du: 'bezahlst', er: 'bezahlt', wir: 'bezahlen', ihr: 'bezahlt', Sie: 'bezahlen',
+                partizipII: 'bezahlt' },
+            'bringen': { ich: 'bringe', du: 'bringst', er: 'bringt', wir: 'bringen', ihr: 'bringt', Sie: 'bringen',
+                partizipII: 'gebracht' },
+            'empfehlen': { ich: 'empfehle', du: 'empfiehlst', er: 'empfiehlt', wir: 'empfehlen', ihr: 'empfehlt',
+                Sie: 'empfehlen', partizipII: 'empfohlen' },
+            'entdecken': { ich: 'entdecke', du: 'entdeckst', er: 'entdeckt', wir: 'entdecken', ihr: 'entdeckt',
+                Sie: 'entdecken', partizipII: 'entdeckt' },
+            'entscheiden': { ich: 'entscheide', du: 'entscheidest', er: 'entscheidet', wir: 'entscheiden',
+                ihr: 'entscheidet', Sie: 'entscheiden', partizipII: 'entschieden' },
+            'entwickeln': { ich: 'entwickle', du: 'entwickelst', er: 'entwickelt', wir: 'entwickeln', ihr: 'entwickelt',
+                Sie: 'entwickeln', partizipII: 'entwickelt' },
+            'erklären': { ich: 'erkläre', du: 'erklärst', er: 'erklärt', wir: 'erklären', ihr: 'erklärt', Sie: 'erklären',
+                partizipII: 'erklärt' },
+            'erlauben': { ich: 'erlaube', du: 'erlaubst', er: 'erlaubt', wir: 'erlauben', ihr: 'erlaubt', Sie: 'erlauben',
+                partizipII: 'erlaubt' },
+            'erzählen': { ich: 'erzähle', du: 'erzählst', er: 'erzählt', wir: 'erzählen', ihr: 'erzählt', Sie: 'erzählen',
+                partizipII: 'erzählt' },
+            'fallen': { ich: 'falle', du: 'fällst', er: 'fällt', wir: 'fallen', ihr: 'fallt', Sie: 'fallen',
+                partizipII: 'gefallen' },
+            'gewinnen': { ich: 'gewinne', du: 'gewinnst', er: 'gewinnt', wir: 'gewinnen', ihr: 'gewinnt', Sie: 'gewinnen',
+                partizipII: 'gewonnen' },
+            'halten': { ich: 'halte', du: 'hältst', er: 'hält', wir: 'halten', ihr: 'haltet', Sie: 'halten',
+                partizipII: 'gehalten' },
+            'hängen': { ich: 'hänge', du: 'hängst', er: 'hängt', wir: 'hängen', ihr: 'hängt', Sie: 'hängen',
+                partizipII: 'gehangen' },
+            'heißen': { ich: 'heiße', du: 'heißt', er: 'heißt', wir: 'heißen', ihr: 'heißt', Sie: 'heißen',
+                partizipII: 'geheißen' },
+            'kennen': { ich: 'kenne', du: 'kennst', er: 'kennt', wir: 'kennen', ihr: 'kennt', Sie: 'kennen',
+                partizipII: 'gekannt' },
+            'lassen': { ich: 'lasse', du: 'lässt', er: 'lässt', wir: 'lassen', ihr: 'lasst', Sie: 'lassen',
+                partizipII: 'gelassen' },
+            'rennen': { ich: 'renne', du: 'rennst', er: 'rennt', wir: 'rennen', ihr: 'rennt', Sie: 'rennen',
+                partizipII: 'gerannt' },
+            'scheinen': { ich: 'scheine', du: 'scheinst', er: 'scheint', wir: 'scheinen', ihr: 'scheint', Sie: 'scheinen',
+                partizipII: 'geschienen' },
+            'schneiden': { ich: 'schneide', du: 'schneidest', er: 'schneidet', wir: 'schneiden', ihr: 'schneidet',
+                Sie: 'schneiden', partizipII: 'geschnitten' },
+            'singen': { ich: 'singe', du: 'singst', er: 'singt', wir: 'singen', ihr: 'singt', Sie: 'singen',
+                partizipII: 'gesungen' },
+            'tragen': { ich: 'trage', du: 'trägst', er: 'trägt', wir: 'tragen', ihr: 'tragt', Sie: 'tragen',
+                partizipII: 'getragen' },
+            'treffen': { ich: 'treffe', du: 'triffst', er: 'trifft', wir: 'treffen', ihr: 'trefft', Sie: 'treffen',
+                partizipII: 'getroffen' },
+            'tun': { ich: 'tue', du: 'tust', er: 'tut', wir: 'tun', ihr: 'tut', Sie: 'tun', partizipII: 'getan' },
+            'überlegen': { ich: 'überlege', du: 'überlegst', er: 'überlegt', wir: 'überlegen', ihr: 'überlegt',
+                Sie: 'überlegen', partizipII: 'überlegt' },
+            'vergessen': { ich: 'vergesse', du: 'vergisst', er: 'vergisst', wir: 'vergessen', ihr: 'vergesst',
+                Sie: 'vergessen', partizipII: 'vergessen' },
+            'verlieren': { ich: 'verliere', du: 'verlierst', er: 'verliert', wir: 'verlieren', ihr: 'verliert',
+                Sie: 'verlieren', partizipII: 'verloren' },
+            'ziehen': { ich: 'ziehe', du: 'ziehst', er: 'zieht', wir: 'ziehen', ihr: 'zieht', Sie: 'ziehen',
+                partizipII: 'gezogen' },
+            'fragen': { ich: 'frage', du: 'fragst', er: 'fragt', wir: 'fragen', ihr: 'fragt', Sie: 'fragen',
+                partizipII: 'gefragt' },
+            'glauben': { ich: 'glaube', du: 'glaubst', er: 'glaubt', wir: 'glauben', ihr: 'glaubt', Sie: 'glauben',
+                partizipII: 'geglaubt' },
+            'passen': { ich: 'passe', du: 'passt', er: 'passt', wir: 'passen', ihr: 'passt', Sie: 'passen',
+                partizipII: 'gepasst' },
+            'planen': { ich: 'plane', du: 'planst', er: 'plant', wir: 'planen', ihr: 'plant', Sie: 'planen',
+                partizipII: 'geplant' },
+            'reden': { ich: 'rede', du: 'redest', er: 'redet', wir: 'reden', ihr: 'redet', Sie: 'reden',
+                partizipII: 'geredet' },
+            'reisen': { ich: 'reise', du: 'reist', er: 'reist', wir: 'reisen', ihr: 'reist', Sie: 'reisen',
+                partizipII: 'gereist' },
+            'schauen': { ich: 'schaue', du: 'schaust', er: 'schaut', wir: 'schauen', ihr: 'schaut', Sie: 'schauen',
+                partizipII: 'geschaut' },
+            'schicken': { ich: 'schicke', du: 'schickst', er: 'schickt', wir: 'schicken', ihr: 'schickt', Sie: 'schicken',
+                partizipII: 'geschickt' },
+            'suchen': { ich: 'suche', du: 'suchst', er: 'sucht', wir: 'suchen', ihr: 'sucht', Sie: 'suchen',
+                partizipII: 'gesucht' },
+            'warten': { ich: 'warte', du: 'wartest', er: 'wartet', wir: 'warten', ihr: 'wartet', Sie: 'warten',
+                partizipII: 'gewartet' },
+            'wohnen': { ich: 'wohne', du: 'wohnst', er: 'wohnt', wir: 'wohnen', ihr: 'wohnt', Sie: 'wohnen',
+                partizipII: 'gewohnt' },
+            'zeigen': { ich: 'zeige', du: 'zeigst', er: 'zeigt', wir: 'zeigen', ihr: 'zeigt', Sie: 'zeigen',
+                partizipII: 'gezeigt' },
+            'brauchen': { ich: 'brauche', du: 'brauchst', er: 'braucht', wir: 'brauchen', ihr: 'braucht', Sie: 'brauchen',
+                partizipII: 'gebraucht' },
+            'feiern': { ich: 'feiere', du: 'feierst', er: 'feiert', wir: 'feiern', ihr: 'feiert', Sie: 'feiern',
+                partizipII: 'gefeiert' },
+            'grüßen': { ich: 'grüße', du: 'grüßt', er: 'grüßt', wir: 'grüßen', ihr: 'grüßt', Sie: 'grüßen',
+                partizipII: 'gegrüßt' }
         };
 
-        // ----- base verb list (infinitive + english) -----
         const baseVerbs = [
             { de: 'sein', en: 'to be' },
             { de: 'haben', en: 'to have' },
@@ -826,48 +980,75 @@
             { de: 'kaufen', en: 'to buy' },
             { de: 'verkaufen', en: 'to sell' },
             { de: 'bauen', en: 'to build' },
-            { de: 'reparieren', en: 'to repair' }
+            { de: 'reparieren', en: 'to repair' },
+            { de: 'anfangen', en: 'to start / begin' },
+            { de: 'aufhören', en: 'to stop / cease' },
+            { de: 'aussehen', en: 'to look / appear' },
+            { de: 'beginnen', en: 'to begin' },
+            { de: 'bekommen', en: 'to get / receive' },
+            { de: 'beschreiben', en: 'to describe' },
+            { de: 'besuchen', en: 'to visit' },
+            { de: 'bezahlen', en: 'to pay' },
+            { de: 'bringen', en: 'to bring' },
+            { de: 'empfehlen', en: 'to recommend' },
+            { de: 'entdecken', en: 'to discover' },
+            { de: 'entscheiden', en: 'to decide' },
+            { de: 'entwickeln', en: 'to develop' },
+            { de: 'erklären', en: 'to explain' },
+            { de: 'erlauben', en: 'to allow / permit' },
+            { de: 'erzählen', en: 'to tell / narrate' },
+            { de: 'fallen', en: 'to fall' },
+            { de: 'fragen', en: 'to ask' },
+            { de: 'gewinnen', en: 'to win' },
+            { de: 'glauben', en: 'to believe' },
+            { de: 'halten', en: 'to hold / stop' },
+            { de: 'hängen', en: 'to hang' },
+            { de: 'heißen', en: 'to be called / mean' },
+            { de: 'kennen', en: 'to know (a person)' },
+            { de: 'lassen', en: 'to let / allow / leave' },
+            { de: 'passen', en: 'to fit / suit' },
+            { de: 'planen', en: 'to plan' },
+            { de: 'reden', en: 'to talk / speak' },
+            { de: 'reisen', en: 'to travel' },
+            { de: 'rennen', en: 'to run (fast)' },
+            { de: 'schauen', en: 'to look / watch' },
+            { de: 'scheinen', en: 'to seem / shine' },
+            { de: 'schicken', en: 'to send' },
+            { de: 'schneiden', en: 'to cut' },
+            { de: 'singen', en: 'to sing' },
+            { de: 'suchen', en: 'to search / look for' },
+            { de: 'tragen', en: 'to carry / wear' },
+            { de: 'treffen', en: 'to meet' },
+            { de: 'tun', en: 'to do' },
+            { de: 'überlegen', en: 'to consider / think over' },
+            { de: 'vergessen', en: 'to forget' },
+            { de: 'verlieren', en: 'to lose' },
+            { de: 'warten', en: 'to wait' },
+            { de: 'wohnen', en: 'to live / reside' },
+            { de: 'zeigen', en: 'to show' },
+            { de: 'ziehen', en: 'to pull / draw' },
+            { de: 'brauchen', en: 'to need' },
+            { de: 'feiern', en: 'to celebrate' },
+            { de: 'grüßen', en: 'to greet' }
         ];
 
-        // ----- build full verb list with conjugations -----
         function buildVerbList() {
             return baseVerbs.map(item => {
                 const inf = item.de;
                 let conj;
                 if (irregularMap[inf]) {
                     const irr = irregularMap[inf];
-                    conj = {
-                        ich: irr.ich,
-                        du: irr.du,
-                        er: irr.er,
-                        wir: irr.wir,
-                        ihr: irr.ihr,
-                        Sie: irr.Sie,
-                        partizipII: irr.partizipII
-                    };
+                    conj = { ich: irr.ich, du: irr.du, er: irr.er, wir: irr.wir, ihr: irr.ihr, Sie: irr.Sie,
+                        partizipII: irr.partizipII };
                 } else {
                     const reg = generateRegular(inf);
-                    conj = {
-                        ich: reg.ich,
-                        du: reg.du,
-                        er: reg.er,
-                        wir: reg.wir,
-                        ihr: reg.ihr,
-                        Sie: reg.Sie,
-                        partizipII: reg.partizipII
-                    };
+                    conj = { ich: reg.ich, du: reg.du, er: reg.er, wir: reg.wir, ihr: reg.ihr, Sie: reg.Sie,
+                        partizipII: reg.partizipII };
                 }
                 return {
                     de: inf,
                     en: item.en,
-                    conjugations: {
-                        ich: conj.ich,
-                        du: conj.du,
-                        er: conj.er,
-                        wir: conj.wir,
-                        ihr: conj.ihr,
-                        Sie: conj.Sie
-                    },
+                    conjugations: { ich: conj.ich, du: conj.du, er: conj.er, wir: conj.wir, ihr: conj.ihr, Sie: conj.Sie },
                     partizipII: conj.partizipII
                 };
             });
@@ -882,7 +1063,6 @@
         let currentIndex = 0;
         let isFlipped = false;
 
-        // DOM refs
         const cardEl = document.getElementById('card');
         const wrapper = document.getElementById('cardWrapper');
         const germanWord = document.getElementById('germanWord');
@@ -898,8 +1078,9 @@
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         const shuffleBtn = document.getElementById('shuffleBtn');
+        const scrollHint = document.getElementById('scrollHint');
+        const backScroll = document.getElementById('backScroll');
 
-        // Helper for pronoun keys
         const pronounKeys = [
             { label: 'ich', key: 'ich' },
             { label: 'du', key: 'du' },
@@ -917,13 +1098,9 @@
             const verb = cards[currentIndex];
             if (!verb) return;
 
-            // Front
             germanWord.textContent = verb.de;
-
-            // Back
             englishWord.textContent = verb.en;
 
-            // Render table
             conjBody.innerHTML = '';
             pronounKeys.forEach(p => {
                 const tr = document.createElement('tr');
@@ -938,7 +1115,6 @@
 
             partizipIIEl.textContent = verb.partizipII;
 
-            // Counters
             currentIndexEl.textContent = currentIndex + 1;
             totalCountEl.textContent = cards.length;
             totalBadge.textContent = cards.length;
@@ -950,17 +1126,24 @@
 
             currentVerbLabel.textContent = verb.de;
 
-            // Unflip when changing card
             if (isFlipped) {
                 cardEl.classList.remove('flipped');
                 isFlipped = false;
             }
 
-            // Re-trigger animation
             wrapper.style.animation = 'none';
             requestAnimationFrame(() => {
                 wrapper.style.animation = 'fadeSlideUp 0.4s ease forwards';
             });
+
+            // Check if scroll hint is needed (after a small delay for layout)
+            setTimeout(() => {
+                const el = backScroll;
+                if (el) {
+                    const needsScroll = el.scrollHeight > el.clientHeight;
+                    scrollHint.style.display = needsScroll ? 'block' : 'none';
+                }
+            }, 100);
         }
 
         // ——————————————————————————————————————————————
@@ -990,10 +1173,14 @@
         function toggleFlip() {
             isFlipped = !isFlipped;
             cardEl.classList.toggle('flipped', isFlipped);
+            // Reset scroll position when flipping to back
+            if (isFlipped && backScroll) {
+                backScroll.scrollTop = 0;
+            }
         }
 
         // ——————————————————————————————————————————————
-        //  5.  EVENT BINDING
+        //  5.  EVENTS
         // ——————————————————————————————————————————————
 
         wrapper.addEventListener('click', toggleFlip);
@@ -1019,13 +1206,20 @@
         //  6.  INIT
         // ——————————————————————————————————————————————
 
-        // Shuffle once at start
         for (let i = cards.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [cards[i], cards[j]] = [cards[j], cards[i]];
         }
         currentIndex = 0;
         renderCard();
+
+        // Re-check scroll hint on resize
+        window.addEventListener('resize', () => {
+            if (isFlipped && backScroll) {
+                const needsScroll = backScroll.scrollHeight > backScroll.clientHeight;
+                scrollHint.style.display = needsScroll ? 'block' : 'none';
+            }
+        });
     </script>
 
 </body>
