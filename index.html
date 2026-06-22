@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>German Verbs · Flashcard</title>
+    <title>German Verbs · Conjugation Flashcards</title>
 
-    <!-- Google Fonts for a clean, professional look -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet" />
 
     <style>
         /* ——— Reset & Base ——— */
@@ -57,10 +57,9 @@
                 radial-gradient(circle at 80% 70%, rgba(79, 110, 247, 0.04) 0%, transparent 50%);
         }
 
-        /* ——— App Container ——— */
         .app {
             width: 100%;
-            max-width: 640px;
+            max-width: 680px;
             margin: 0 auto;
             padding: 16px 0 30px;
         }
@@ -70,7 +69,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
             padding: 0 4px;
         }
 
@@ -101,11 +100,10 @@
             letter-spacing: -0.3px;
             line-height: 1.2;
         }
-
         .header h1 span {
             font-weight: 400;
             color: var(--text-secondary);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             display: block;
             margin-top: 1px;
         }
@@ -115,7 +113,6 @@
             align-items: center;
             gap: 10px;
         }
-
         .badge {
             background: var(--accent-light);
             color: var(--accent);
@@ -127,12 +124,11 @@
             white-space: nowrap;
         }
 
-        /* ——— Progress Bar ——— */
+        /* ——— Progress ——— */
         .progress-wrap {
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             padding: 0 4px;
         }
-
         .progress-meta {
             display: flex;
             justify-content: space-between;
@@ -141,12 +137,10 @@
             color: var(--text-secondary);
             margin-bottom: 8px;
         }
-
         .progress-meta .count {
             color: var(--text-primary);
             font-weight: 600;
         }
-
         .progress-track {
             width: 100%;
             height: 4px;
@@ -155,7 +149,6 @@
             overflow: hidden;
             position: relative;
         }
-
         .progress-fill {
             height: 100%;
             width: 0%;
@@ -167,7 +160,7 @@
         /* ——— Flashcard ——— */
         .card-wrapper {
             perspective: 1200px;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
         }
@@ -175,14 +168,12 @@
         .card {
             position: relative;
             width: 100%;
-            aspect-ratio: 16 / 10;
+            aspect-ratio: 16 / 11;
             transform-style: preserve-3d;
             transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
             background: transparent;
         }
-
         .card.flipped {
             transform: rotateY(180deg);
         }
@@ -197,13 +188,13 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px 32px;
+            padding: 32px 28px;
             background: var(--card-bg);
             box-shadow: var(--shadow);
             transition: box-shadow 0.3s ease;
             text-align: center;
+            overflow-y: auto;
         }
-
         .card-face:hover {
             box-shadow: var(--shadow-hover);
         }
@@ -211,52 +202,41 @@
         .card-front {
             z-index: 2;
         }
-
         .card-back {
             transform: rotateY(180deg);
             z-index: 1;
+            padding: 24px 20px;
+            align-items: stretch;
+            justify-content: flex-start;
+            gap: 4px;
         }
 
-        /* Card content */
-        .card-label {
+        /* Front */
+        .card-front .card-word {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .card-front .card-label {
             font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1.2px;
             color: var(--text-muted);
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
-
-        .card-word {
-            font-size: 2.8rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            line-height: 1.2;
-            color: var(--text-primary);
-            margin-bottom: 6px;
-        }
-
-        .card-word small {
-            font-size: 1.1rem;
-            font-weight: 400;
-            color: var(--text-secondary);
-            letter-spacing: 0;
-            display: inline-block;
-            margin-left: 6px;
-        }
-
-        .card-hint {
+        .card-front .card-hint {
             font-size: 0.8rem;
             color: var(--text-muted);
             margin-top: 16px;
             display: flex;
             align-items: center;
             gap: 8px;
-            opacity: 0.7;
-            transition: opacity 0.3s ease;
+            opacity: 0.6;
         }
-
-        .card-hint svg {
+        .card-front .card-hint svg {
             width: 16px;
             height: 16px;
             stroke: var(--text-muted);
@@ -264,16 +244,86 @@
             stroke-width: 2;
         }
 
-        .card-back .card-word {
+        /* Back */
+        .card-back .back-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid #eef1f6;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .card-back .back-header .en-word {
+            font-size: 1.5rem;
+            font-weight: 600;
             color: var(--accent);
         }
-
-        .card-back .card-label {
-            color: var(--accent);
+        .card-back .back-header .label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
         }
 
-        .card-back .card-hint {
-            opacity: 0.5;
+        /* ——— Clean Table for Conjugations ——— */
+        .conj-table-wrap {
+            width: 100%;
+            margin: 4px 0 6px;
+        }
+
+        .conj-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .conj-table th {
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 0;
+            border-bottom: 1px solid #eef1f6;
+        }
+
+        .conj-table td {
+            padding: 6px 0;
+            border-bottom: 1px solid #f4f6fa;
+        }
+
+        .conj-table td:last-child {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .conj-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ——— Partizip II ——— */
+        .partizip-wrap {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #eef1f6;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+        .partizip-wrap strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .partizip-wrap .pp {
+            font-weight: 600;
+            color: var(--accent);
         }
 
         /* ——— Navigation ——— */
@@ -282,8 +332,8 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
-            margin-top: 4px;
             flex-wrap: wrap;
+            margin-top: 4px;
         }
 
         .btn {
@@ -306,7 +356,6 @@
             border: 1px solid transparent;
             min-width: 48px;
         }
-
         .btn:active {
             transform: scale(0.96);
         }
@@ -317,15 +366,10 @@
             box-shadow: 0 4px 16px rgba(79, 110, 247, 0.25);
             border-color: var(--accent);
         }
-
         .btn-primary:hover {
             background: var(--accent-hover);
             box-shadow: 0 8px 24px rgba(79, 110, 247, 0.3);
             transform: translateY(-1px);
-        }
-
-        .btn-primary:active {
-            transform: scale(0.96) translateY(0);
         }
 
         .btn-outline {
@@ -333,7 +377,6 @@
             border-color: #e4e8f0;
             color: var(--text-secondary);
         }
-
         .btn-outline:hover {
             border-color: var(--text-muted);
             background: rgba(0, 0, 0, 0.02);
@@ -345,7 +388,6 @@
             border-radius: 60px;
             flex-shrink: 0;
         }
-
         .btn-icon svg {
             width: 20px;
             height: 20px;
@@ -361,21 +403,18 @@
             color: var(--accent);
             border-color: transparent;
         }
-
         .btn-shuffle:hover {
             background: #d6defc;
         }
 
-        /* ——— Footer ——— */
         .footer {
-            margin-top: 36px;
+            margin-top: 28px;
             text-align: center;
             font-size: 0.75rem;
             color: var(--text-muted);
             letter-spacing: 0.2px;
             padding: 0 4px;
         }
-
         .footer span {
             font-weight: 500;
             color: var(--text-secondary);
@@ -386,80 +425,78 @@
             body {
                 padding: 12px;
             }
-
             .app {
-                padding: 8px 0 20px;
+                padding: 8px 0 16px;
             }
-
             .header h1 {
                 font-size: 1.05rem;
             }
             .header h1 span {
-                font-size: 0.75rem;
+                font-size: 0.7rem;
             }
-
             .logo-icon {
                 width: 36px;
                 height: 36px;
                 font-size: 15px;
             }
-
-            .card-word {
-                font-size: 2.1rem;
+            .card-front .card-word {
+                font-size: 2.2rem;
             }
-            .card-word small {
-                font-size: 0.95rem;
+            .card-back .back-header .en-word {
+                font-size: 1.2rem;
             }
-
+            .conj-table {
+                font-size: 0.8rem;
+            }
             .card-face {
-                padding: 28px 20px;
+                padding: 20px 16px;
             }
-
+            .card-back {
+                padding: 16px 14px;
+            }
             .btn {
-                padding: 10px 18px;
+                padding: 10px 16px;
                 font-size: 0.8rem;
             }
             .btn-icon {
                 width: 44px;
                 padding: 10px;
             }
-
             .badge {
                 font-size: 0.65rem;
-                padding: 4px 12px;
+                padding: 4px 10px;
             }
-
             .nav-controls {
                 gap: 8px;
             }
-
             .progress-meta {
                 font-size: 0.7rem;
             }
         }
 
         @media (max-width: 400px) {
-            .card-word {
-                font-size: 1.7rem;
+            .card-front .card-word {
+                font-size: 1.8rem;
+            }
+            .card-back .back-header .en-word {
+                font-size: 1rem;
+            }
+            .conj-table {
+                font-size: 0.7rem;
             }
             .card-face {
-                padding: 20px 16px;
+                padding: 14px 12px;
+            }
+            .card-back {
+                padding: 12px 10px;
             }
             .btn {
-                padding: 8px 14px;
-                font-size: 0.75rem;
+                padding: 8px 12px;
+                font-size: 0.7rem;
             }
             .btn-icon {
                 width: 38px;
                 padding: 8px;
-            }
-            .header h1 {
-                font-size: 0.9rem;
-            }
-            .logo-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 13px;
             }
         }
 
@@ -474,12 +511,10 @@
                 transform: translateY(0);
             }
         }
-
         .card-wrapper {
             animation: fadeSlideUp 0.5s ease forwards;
         }
 
-        /* ——— Utility ——— */
         .sr-only {
             position: absolute;
             width: 1px;
@@ -490,9 +525,20 @@
             clip: rect(0, 0, 0, 0);
             border: 0;
         }
+
+        /* scrollable back */
+        .card-back::-webkit-scrollbar {
+            width: 3px;
+        }
+        .card-back::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .card-back::-webkit-scrollbar-thumb {
+            background: #d0d5e0;
+            border-radius: 20px;
+        }
     </style>
 </head>
-
 <body>
 
     <div class="app" role="main">
@@ -503,7 +549,7 @@
                 <div class="logo-icon" aria-hidden="true">DE</div>
                 <h1>
                     Verbs
-                    <span>German · English</span>
+                    <span>conjugations · partizip II</span>
                 </h1>
             </div>
             <div class="header-right">
@@ -525,28 +571,42 @@
         <!-- Flashcard -->
         <div class="card-wrapper" id="cardWrapper" role="button" tabindex="0" aria-label="Flashcard, tap to flip">
             <div class="card" id="card">
-                <!-- Front: German -->
+                <!-- FRONT: German verb -->
                 <div class="card-face card-front">
                     <span class="card-label">🇩🇪 German</span>
                     <div class="card-word" id="germanWord">—</div>
                     <div class="card-hint">
-                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 2v4M12 22v-4M4 12H2M22 12h-2M19.07 4.93l-2.83 2.83M4.93 19.07l2.83-2.83M19.07 19.07l-2.83-2.83M4.93 4.93l2.83 2.83" />
-                            <circle cx="12" cy="12" r="2" />
-                        </svg>
-                        <span>tap to reveal</span>
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" fill="none"/><path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-linecap="round"/></svg>
+                        <span>tap to flip</span>
                     </div>
                 </div>
-                <!-- Back: English -->
-                <div class="card-face card-back">
-                    <span class="card-label">🇬🇧 English</span>
-                    <div class="card-word" id="englishWord">—</div>
-                    <div class="card-hint">
-                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 2v4M12 22v-4M4 12H2M22 12h-2M19.07 4.93l-2.83 2.83M4.93 19.07l2.83-2.83M19.07 19.07l-2.83-2.83M4.93 4.93l2.83 2.83" />
-                            <circle cx="12" cy="12" r="2" />
-                        </svg>
-                        <span>tap to flip back</span>
+
+                <!-- BACK: English + conjugations + Partizip II -->
+                <div class="card-face card-back" id="cardBack">
+                    <div class="back-header">
+                        <span class="label">🇬🇧 English</span>
+                        <span class="en-word" id="englishWord">—</span>
+                    </div>
+
+                    <!-- Clean Table for Conjugations -->
+                    <div class="conj-table-wrap">
+                        <table class="conj-table">
+                            <thead>
+                                <tr>
+                                    <th>Pronomen</th>
+                                    <th>Konjugation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="conjBody">
+                                <!-- JavaScript renders rows -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Partizip II -->
+                    <div class="partizip-wrap">
+                        <span>Partizip II</span>
+                        <strong class="pp" id="partizipII">—</strong>
                     </div>
                 </div>
             </div>
@@ -557,12 +617,10 @@
             <button class="btn btn-outline btn-icon" id="prevBtn" aria-label="Previous card">
                 <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
             </button>
-
-            <button class="btn btn-outline" id="shuffleBtn" aria-label="Shuffle cards">
+            <button class="btn btn-outline btn-shuffle" id="shuffleBtn" aria-label="Shuffle cards">
                 <svg viewBox="0 0 24 24" width="18" height="18" style="margin-right:4px;"><polyline points="16 3 21 3 21 8" /><line x1="4" y1="20" x2="21" y2="3" /><polyline points="21 16 21 21 16 21" /><line x1="15" y1="15" x2="21" y2="21" /><line x1="4" y1="4" x2="9" y2="9" /></svg>
                 Shuffle
             </button>
-
             <button class="btn btn-primary" id="nextBtn" aria-label="Next card">
                 Next
                 <svg viewBox="0 0 24 24" width="18" height="18"><polyline points="9 18 15 12 9 6" /></svg>
@@ -570,16 +628,154 @@
         </nav>
 
         <footer class="footer">
-            <span id="currentVerbLabel">—</span> &middot; tap the card to see the meaning
+            <span id="currentVerbLabel">—</span> · tap the card to see conjugations
         </footer>
     </div>
 
     <script>
-        // ——————————————————————————————————————
-        //  1.  DATA  –  German verbs with English meanings
-        // ——————————————————————————————————————
+        // ——————————————————————————————————————————————
+        //  1.  DATA  –  verbs with conjugations & Partizip II
+        // ——————————————————————————————————————————————
 
-        const verbs = [
+        // ----- helper: generate regular conjugations -----
+        function generateRegular(infinitive) {
+            let stem = infinitive.endsWith('en') ? infinitive.slice(0, -2) : infinitive;
+            // handle verbs ending with -n (like tun)
+            if (infinitive === 'tun') {
+                return {
+                    ich: 'tue',
+                    du: 'tust',
+                    er: 'tut',
+                    wir: 'tun',
+                    ihr: 'tut',
+                    Sie: 'tun',
+                    partizipII: 'getan'
+                };
+            }
+
+            // Stem ending with s/ss/ß/z/x -> du gets +t instead of +st
+            const sEnd = /[sßzx]$/.test(stem);
+            const dEnd = /[dt]$/.test(stem);
+
+            const ich = stem + 'e';
+            const du = sEnd ? stem + 't' : stem + 'st';
+            const er = stem + 't';
+            const wir = stem + 'en';
+            const ihr = stem + 't';
+            const Sie = stem + 'en';
+
+            // Partizip II: ge + stem + (t / et)
+            let pp = 'ge' + stem;
+            if (dEnd) pp += 'et';
+            else pp += 't';
+
+            return { ich, du, er, wir, ihr, Sie, partizipII: pp };
+        }
+
+        // ----- irregular conjugations map -----
+        const irregularMap = {
+            'sein': { ich: 'bin', du: 'bist', er: 'ist', wir: 'sind', ihr: 'seid', Sie: 'sind', partizipII: 'gewesen' },
+            'haben': { ich: 'habe', du: 'hast', er: 'hat', wir: 'haben', ihr: 'habt', Sie: 'haben',
+                partizipII: 'gehabt' },
+            'werden': { ich: 'werde', du: 'wirst', er: 'wird', wir: 'werden', ihr: 'werdet', Sie: 'werden',
+                partizipII: 'geworden' },
+            'können': { ich: 'kann', du: 'kannst', er: 'kann', wir: 'können', ihr: 'könnt', Sie: 'können',
+                partizipII: 'gekonnt' },
+            'müssen': { ich: 'muss', du: 'musst', er: 'muss', wir: 'müssen', ihr: 'müsst', Sie: 'müssen',
+                partizipII: 'gemusst' },
+            'wollen': { ich: 'will', du: 'willst', er: 'will', wir: 'wollen', ihr: 'wollt', Sie: 'wollen',
+                partizipII: 'gewollt' },
+            'sollen': { ich: 'soll', du: 'sollst', er: 'soll', wir: 'sollen', ihr: 'sollt', Sie: 'sollen',
+                partizipII: 'gesollt' },
+            'dürfen': { ich: 'darf', du: 'darfst', er: 'darf', wir: 'dürfen', ihr: 'dürft', Sie: 'dürfen',
+                partizipII: 'gedurft' },
+            'mögen': { ich: 'mag', du: 'magst', er: 'mag', wir: 'mögen', ihr: 'mögt', Sie: 'mögen', partizipII: 'gemocht' },
+            'gehen': { ich: 'gehe', du: 'gehst', er: 'geht', wir: 'gehen', ihr: 'geht', Sie: 'gehen',
+                partizipII: 'gegangen' },
+            'sehen': { ich: 'sehe', du: 'siehst', er: 'sieht', wir: 'sehen', ihr: 'seht', Sie: 'sehen',
+                partizipII: 'gesehen' },
+            'sprechen': { ich: 'spreche', du: 'sprichst', er: 'spricht', wir: 'sprechen', ihr: 'sprecht', Sie: 'sprechen',
+                partizipII: 'gesprochen' },
+            'geben': { ich: 'gebe', du: 'gibst', er: 'gibt', wir: 'geben', ihr: 'gebt', Sie: 'geben',
+                partizipII: 'gegeben' },
+            'nehmen': { ich: 'nehme', du: 'nimmst', er: 'nimmt', wir: 'nehmen', ihr: 'nehmt', Sie: 'nehmen',
+                partizipII: 'genommen' },
+            'wissen': { ich: 'weiß', du: 'weißt', er: 'weiß', wir: 'wissen', ihr: 'wisst', Sie: 'wissen',
+                partizipII: 'gewusst' },
+            'denken': { ich: 'denke', du: 'denkst', er: 'denkt', wir: 'denken', ihr: 'denkt', Sie: 'denken',
+                partizipII: 'gedacht' },
+            'finden': { ich: 'finde', du: 'findest', er: 'findet', wir: 'finden', ihr: 'findet', Sie: 'finden',
+                partizipII: 'gefunden' },
+            'bleiben': { ich: 'bleibe', du: 'bleibst', er: 'bleibt', wir: 'bleiben', ihr: 'bleibt', Sie: 'bleiben',
+                partizipII: 'geblieben' },
+            'liegen': { ich: 'liege', du: 'liegst', er: 'liegt', wir: 'liegen', ihr: 'liegt', Sie: 'liegen',
+                partizipII: 'gelegen' },
+            'sitzen': { ich: 'sitze', du: 'sitzt', er: 'sitzt', wir: 'sitzen', ihr: 'sitzt', Sie: 'sitzen',
+                partizipII: 'gesessen' },
+            'stehen': { ich: 'stehe', du: 'stehst', er: 'steht', wir: 'stehen', ihr: 'steht', Sie: 'stehen',
+                partizipII: 'gestanden' },
+            'fahren': { ich: 'fahre', du: 'fährst', er: 'fährt', wir: 'fahren', ihr: 'fahrt', Sie: 'fahren',
+                partizipII: 'gefahren' },
+            'fliegen': { ich: 'fliege', du: 'fliegst', er: 'fliegt', wir: 'fliegen', ihr: 'fliegt', Sie: 'fliegen',
+                partizipII: 'geflogen' },
+            'laufen': { ich: 'laufe', du: 'läufst', er: 'läuft', wir: 'laufen', ihr: 'lauft', Sie: 'laufen',
+                partizipII: 'gelaufen' },
+            'schwimmen': { ich: 'schwimme', du: 'schwimmst', er: 'schwimmt', wir: 'schwimmen', ihr: 'schwimmt',
+                Sie: 'schwimmen', partizipII: 'geschwommen' },
+            'essen': { ich: 'esse', du: 'isst', er: 'isst', wir: 'essen', ihr: 'esst', Sie: 'essen',
+                partizipII: 'gegessen' },
+            'trinken': { ich: 'trinke', du: 'trinkst', er: 'trinkt', wir: 'trinken', ihr: 'trinkt', Sie: 'trinken',
+                partizipII: 'getrunken' },
+            'schlafen': { ich: 'schlafe', du: 'schläfst', er: 'schläft', wir: 'schlafen', ihr: 'schlaft', Sie: 'schlafen',
+                partizipII: 'geschlafen' },
+            'helfen': { ich: 'helfe', du: 'hilfst', er: 'hilft', wir: 'helfen', ihr: 'helft', Sie: 'helfen',
+                partizipII: 'geholfen' },
+            'verstehen': { ich: 'verstehe', du: 'verstehst', er: 'versteht', wir: 'verstehen', ihr: 'versteht',
+                Sie: 'verstehen', partizipII: 'verstanden' },
+            'schreiben': { ich: 'schreibe', du: 'schreibst', er: 'schreibt', wir: 'schreiben', ihr: 'schreibt',
+                Sie: 'schreiben', partizipII: 'geschrieben' },
+            'lesen': { ich: 'lese', du: 'liest', er: 'liest', wir: 'lesen', ihr: 'lest', Sie: 'lesen',
+                partizipII: 'gelesen' },
+            'öffnen': { ich: 'öffne', du: 'öffnest', er: 'öffnet', wir: 'öffnen', ihr: 'öffnet', Sie: 'öffnen',
+                partizipII: 'geöffnet' },
+            'schließen': { ich: 'schließe', du: 'schließt', er: 'schließt', wir: 'schließen', ihr: 'schließt',
+                Sie: 'schließen', partizipII: 'geschlossen' },
+            'kaufen': { ich: 'kaufe', du: 'kaufst', er: 'kauft', wir: 'kaufen', ihr: 'kauft', Sie: 'kaufen',
+                partizipII: 'gekauft' },
+            'verkaufen': { ich: 'verkaufe', du: 'verkaufst', er: 'verkauft', wir: 'verkaufen', ihr: 'verkauft',
+                Sie: 'verkaufen', partizipII: 'verkauft' },
+            'bauen': { ich: 'baue', du: 'baust', er: 'baut', wir: 'bauen', ihr: 'baut', Sie: 'bauen',
+                partizipII: 'gebaut' },
+            'reparieren': { ich: 'repariere', du: 'reparierst', er: 'repariert', wir: 'reparieren', ihr: 'repariert',
+                Sie: 'reparieren', partizipII: 'repariert' },
+            'arbeiten': { ich: 'arbeite', du: 'arbeitest', er: 'arbeitet', wir: 'arbeiten', ihr: 'arbeitet',
+                Sie: 'arbeiten', partizipII: 'gearbeitet' },
+            'lernen': { ich: 'lerne', du: 'lernst', er: 'lernt', wir: 'lernen', ihr: 'lernt', Sie: 'lernen',
+                partizipII: 'gelernt' },
+            'studieren': { ich: 'studiere', du: 'studierst', er: 'studiert', wir: 'studieren', ihr: 'studiert',
+                Sie: 'studieren', partizipII: 'studiert' },
+            'wachen': { ich: 'wache', du: 'wachst', er: 'wacht', wir: 'wachen', ihr: 'wacht', Sie: 'wachen',
+                partizipII: 'gewacht' },
+            'danken': { ich: 'danke', du: 'dankst', er: 'dankt', wir: 'danken', ihr: 'dankt', Sie: 'danken',
+                partizipII: 'gedankt' },
+            'lieben': { ich: 'liebe', du: 'liebst', er: 'liebt', wir: 'lieben', ihr: 'liebt', Sie: 'lieben',
+                partizipII: 'geliebt' },
+            'hassen': { ich: 'hasse', du: 'hasst', er: 'hasst', wir: 'hassen', ihr: 'hasst', Sie: 'hassen',
+                partizipII: 'gehasst' },
+            'spielen': { ich: 'spiele', du: 'spielst', er: 'spielt', wir: 'spielen', ihr: 'spielt', Sie: 'spielen',
+                partizipII: 'gespielt' },
+            'sagen': { ich: 'sage', du: 'sagst', er: 'sagt', wir: 'sagen', ihr: 'sagt', Sie: 'sagen',
+                partizipII: 'gesagt' },
+            'machen': { ich: 'mache', du: 'machst', er: 'macht', wir: 'machen', ihr: 'macht', Sie: 'machen',
+                partizipII: 'gemacht' },
+            'kommen': { ich: 'komme', du: 'kommst', er: 'kommt', wir: 'kommen', ihr: 'kommt', Sie: 'kommen',
+                partizipII: 'gekommen' },
+            'hören': { ich: 'höre', du: 'hörst', er: 'hört', wir: 'hören', ihr: 'hört', Sie: 'hören',
+                partizipII: 'gehört' },
+        };
+
+        // ----- base verb list (infinitive + english) -----
+        const baseVerbs = [
             { de: 'sein', en: 'to be' },
             { de: 'haben', en: 'to have' },
             { de: 'werden', en: 'to become' },
@@ -632,11 +828,56 @@
             { de: 'reparieren', en: 'to repair' }
         ];
 
-        // ——————————————————————————————————————
-        //  2.  STATE
-        // ——————————————————————————————————————
+        // ----- build full verb list with conjugations -----
+        function buildVerbList() {
+            return baseVerbs.map(item => {
+                const inf = item.de;
+                let conj;
+                if (irregularMap[inf]) {
+                    const irr = irregularMap[inf];
+                    conj = {
+                        ich: irr.ich,
+                        du: irr.du,
+                        er: irr.er,
+                        wir: irr.wir,
+                        ihr: irr.ihr,
+                        Sie: irr.Sie,
+                        partizipII: irr.partizipII
+                    };
+                } else {
+                    const reg = generateRegular(inf);
+                    conj = {
+                        ich: reg.ich,
+                        du: reg.du,
+                        er: reg.er,
+                        wir: reg.wir,
+                        ihr: reg.ihr,
+                        Sie: reg.Sie,
+                        partizipII: reg.partizipII
+                    };
+                }
+                return {
+                    de: inf,
+                    en: item.en,
+                    conjugations: {
+                        ich: conj.ich,
+                        du: conj.du,
+                        er: conj.er,
+                        wir: conj.wir,
+                        ihr: conj.ihr,
+                        Sie: conj.Sie
+                    },
+                    partizipII: conj.partizipII
+                };
+            });
+        }
 
-        let cards = [...verbs]; // current deck (shuffled copy)
+        // ——————————————————————————————————————————————
+        //  2.  STATE
+        // ——————————————————————————————————————————————
+
+        let fullDeck = buildVerbList();
+        let cards = [...fullDeck];
         let currentIndex = 0;
         let isFlipped = false;
 
@@ -645,6 +886,8 @@
         const wrapper = document.getElementById('cardWrapper');
         const germanWord = document.getElementById('germanWord');
         const englishWord = document.getElementById('englishWord');
+        const conjBody = document.getElementById('conjBody');
+        const partizipIIEl = document.getElementById('partizipII');
         const currentIndexEl = document.getElementById('currentIndex');
         const totalCountEl = document.getElementById('totalCount');
         const totalBadge = document.getElementById('totalBadge');
@@ -655,47 +898,73 @@
         const nextBtn = document.getElementById('nextBtn');
         const shuffleBtn = document.getElementById('shuffleBtn');
 
-        // ——————————————————————————————————————
+        // Helper for pronoun keys
+        const pronounKeys = [
+            { label: 'ich', key: 'ich' },
+            { label: 'du', key: 'du' },
+            { label: 'er/sie/es', key: 'er' },
+            { label: 'wir', key: 'wir' },
+            { label: 'ihr', key: 'ihr' },
+            { label: 'Sie', key: 'Sie' }
+        ];
+
+        // ——————————————————————————————————————————————
         //  3.  RENDER
-        // ——————————————————————————————————————
+        // ——————————————————————————————————————————————
 
         function renderCard() {
             const verb = cards[currentIndex];
             if (!verb) return;
 
+            // Front
             germanWord.textContent = verb.de;
+
+            // Back
             englishWord.textContent = verb.en;
 
-            // Update counters
+            // Render table
+            conjBody.innerHTML = '';
+            pronounKeys.forEach(p => {
+                const tr = document.createElement('tr');
+                const td1 = document.createElement('td');
+                td1.textContent = p.label;
+                const td2 = document.createElement('td');
+                td2.textContent = verb.conjugations[p.key];
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                conjBody.appendChild(tr);
+            });
+
+            partizipIIEl.textContent = verb.partizipII;
+
+            // Counters
             currentIndexEl.textContent = currentIndex + 1;
             totalCountEl.textContent = cards.length;
             totalBadge.textContent = cards.length;
 
-            // Progress
             const pct = cards.length > 0 ? ((currentIndex + 1) / cards.length) * 100 : 0;
             progressFill.style.width = pct + '%';
             progressPercent.textContent = Math.round(pct) + '%';
             document.querySelector('.progress-track').setAttribute('aria-valuenow', pct);
 
-            // Footer label
             currentVerbLabel.textContent = verb.de;
 
-            // Ensure card is not flipped when changing
+            // Unflip when changing card
             if (isFlipped) {
                 cardEl.classList.remove('flipped');
                 isFlipped = false;
             }
 
-            // Re-trigger entrance animation
+            // Re-trigger animation
             wrapper.style.animation = 'none';
             requestAnimationFrame(() => {
                 wrapper.style.animation = 'fadeSlideUp 0.4s ease forwards';
             });
         }
 
-        // ——————————————————————————————————————
+        // ——————————————————————————————————————————————
         //  4.  ACTIONS
-        // ——————————————————————————————————————
+        // ——————————————————————————————————————————————
 
         function goTo(index) {
             if (index < 0) index = cards.length - 1;
@@ -704,16 +973,11 @@
             renderCard();
         }
 
-        function next() {
-            goTo(currentIndex + 1);
-        }
+        function next() { goTo(currentIndex + 1); }
 
-        function prev() {
-            goTo(currentIndex - 1);
-        }
+        function prev() { goTo(currentIndex - 1); }
 
         function shuffle() {
-            // Fisher–Yates
             for (let i = cards.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [cards[i], cards[j]] = [cards[j], cards[i]];
@@ -727,14 +991,11 @@
             cardEl.classList.toggle('flipped', isFlipped);
         }
 
-        // ——————————————————————————————————————
+        // ——————————————————————————————————————————————
         //  5.  EVENT BINDING
-        // ——————————————————————————————————————
+        // ——————————————————————————————————————————————
 
-        // Card click / tap
         wrapper.addEventListener('click', toggleFlip);
-
-        // Keyboard: Space to flip, Arrow keys to navigate
         wrapper.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -743,28 +1004,21 @@
         });
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                next();
-            } else if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                prev();
-            } else if (e.key === 'r' || e.key === 'R') {
-                e.preventDefault();
-                shuffle();
-            }
+            if (e.key === 'ArrowRight') { e.preventDefault();
+                next(); } else if (e.key === 'ArrowLeft') { e.preventDefault();
+                prev(); } else if (e.key === 'r' || e.key === 'R') { e.preventDefault();
+                shuffle(); }
         });
 
-        // Buttons
         nextBtn.addEventListener('click', next);
         prevBtn.addEventListener('click', prev);
         shuffleBtn.addEventListener('click', shuffle);
 
-        // ——————————————————————————————————————
+        // ——————————————————————————————————————————————
         //  6.  INIT
-        // ——————————————————————————————————————
+        // ——————————————————————————————————————————————
 
-        // Start with a shuffled deck for variety
+        // Shuffle once at start
         for (let i = cards.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [cards[i], cards[j]] = [cards[j], cards[i]];
