@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>German Nouns · der · die · das</title>
+    <link rel="apple-touch-icon" href="https://play-lh.googleusercontent.com/Ih3M2AKc-PWONnoHr3cZYSA0MJgtdTBEnoaTZMsg-P4OYkMpwYWV-OUI5GoD7FnsmH0=w240-h480-rw">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #f4f6fb;
+            --card-bg: #ffffff;
+            --text-primary: #1a1e2b;
+            --text-secondary: #5b6378;
+            --text-muted: #8e95a8;
+            --accent: #4f6ef7;
+            --accent-light: #e8ecff;
+            --shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.08), 0 8px 24px -6px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 32px 64px -16px rgba(0, 0, 0, 0.12);
+            --radius: 24px;
+            --radius-sm: 12px;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+            /* article colors */
+            --der-color: #4f6ef7;
+            --die-color: #e74c6f;
+            --das-color: #2ecc71;
+            --der-bg: #e8ecff;
+            --die-bg: #fde8ee;
+            --das-bg: #e6f9ed;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            background-image: radial-gradient(circle at 20% 30%, rgba(79, 110, 247, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(79, 110, 247, 0.04) 0%, transparent 50%);
+        }
+
+        .app {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px 0 30px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            padding: 0 4px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--accent);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: -0.5px;
+            flex-shrink: 0;
+        }
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+        .header h1 span {
+            font-weight: 400;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            display: block;
+            margin-top: 1px;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badge {
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+
+        /* Progress */
+        .progress-wrap {
+            margin-bottom: 24px;
+            padding: 0 4px;
+        }
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .progress-meta .count {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .progress-track {
+            width: 100%;
+            height: 4px;
+            background: #e4e8f0;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), #7b93fa);
+            border-radius: 40px;
+            transition: width 0.4s ease;
+        }
+
+        /* Flashcard */
+        .card-wrapper {
+            perspective: 1200px;
+            margin-bottom: 28px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .card {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            border-radius: var(--radius);
+            background: transparent;
+        }
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 24px;
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            transition: box-shadow 0.3s ease;
+            text-align: center;
+        }
+        .card-face:hover {
+            box-shadow: var(--shadow-hover);
+        }
+        .card-front {
+            z-index: 2;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+            z-index: 1;
+        }
+
+        .card-face .card-word {
+            font-size: 3.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+        .card-back .card-word {
+            color: var(--accent);
+        }
+        .card-face .card-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+        .card-face .card-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.6;
+        }
+        .card-face .card-hint svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-muted);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        /* Article badge on card */
+        .article-badge {
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 40px;
+            margin-bottom: 10px;
+            letter-spacing: 0.3px;
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+        .article-badge.der {
+            background: var(--der-bg);
+            color: var(--der-color);
+        }
+        .article-badge.die {
+            background: var(--die-bg);
+            color: var(--die-color);
+        }
+        .article-badge.das {
+            background: var(--das-bg);
+            color: var(--das-color);
+        }
+
+        /* Navigation */
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 60px;
+            font-family: var(--font);
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: all 0.25s ease;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            border: 1px solid transparent;
+            min-width: 48px;
+        }
+        .btn:active {
+            transform: scale(0.96);
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(79, 110, 247, 0.25);
+            border-color: var(--accent);
+        }
+        .btn-primary:hover {
+            background: #3d5de8;
+            box-shadow: 0 8px 24px rgba(79, 110, 247, 0.3);
+            transform: translateY(-1px);
+        }
+        .btn-outline {
+            background: transparent;
+            border-color: #e4e8f0;
+            color: var(--text-secondary);
+        }
+        .btn-outline:hover {
+            border-color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.02);
+        }
+        .btn-icon {
+            padding: 12px;
+            width: 48px;
+            border-radius: 60px;
+            flex-shrink: 0;
+        }
+        .btn-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .btn-shuffle {
+            background: var(--accent-light);
+            color: var(--accent);
+            border-color: transparent;
+        }
+        .btn-shuffle:hover {
+            background: #d6defc;
+        }
+
+        .footer {
+            margin-top: 28px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.2px;
+            padding: 0 4px;
+        }
+        .footer span {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .footer .article-key {
+            display: inline-flex;
+            gap: 14px;
+            margin-top: 6px;
+            font-size: 0.7rem;
+        }
+        .footer .article-key span {
+            font-weight: 600;
+        }
+        .footer .article-key .k-der {
+            color: var(--der-color);
+        }
+        .footer .article-key .k-die {
+            color: var(--die-color);
+        }
+        .footer .article-key .k-das {
+            color: var(--das-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+            .app {
+                padding: 8px 0 16px;
+            }
+            .header h1 {
+                font-size: 1.05rem;
+            }
+            .header h1 span {
+                font-size: 0.7rem;
+            }
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 15px;
+            }
+            .card-face .card-word {
+                font-size: 2.6rem;
+            }
+            .card-face {
+                padding: 24px 18px;
+            }
+            .btn {
+                padding: 10px 16px;
+                font-size: 0.8rem;
+            }
+            .btn-icon {
+                width: 44px;
+                padding: 10px;
+            }
+            .badge {
+                font-size: 0.65rem;
+                padding: 4px 10px;
+            }
+            .nav-controls {
+                gap: 8px;
+            }
+            .progress-meta {
+                font-size: 0.7rem;
+            }
+            .card {
+                aspect-ratio: 16 / 11;
+            }
+            .article-badge {
+                font-size: 0.7rem;
+                padding: 3px 12px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .card-face .card-word {
+                font-size: 2.0rem;
+            }
+            .card-face {
+                padding: 18px 14px;
+            }
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.7rem;
+            }
+            .btn-icon {
+                width: 38px;
+                padding: 8px;
+            }
+            .card {
+                aspect-ratio: 16 / 12;
+            }
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .card-wrapper {
+            animation: fadeSlideUp 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app" role="main">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo-icon" aria-hidden="true">DE</div>
+                <h1>
+                    Nouns
+                    <span>der · die · das</span>
+                </h1>
+            </div>
+            <div class="header-right">
+                <span class="badge" id="totalBadge">0</span>
+            </div>
+        </header>
+
+        <!-- Progress -->
+        <div class="progress-wrap">
+            <div class="progress-meta">
+                <span><span class="count" id="currentIndex">0</span> / <span id="totalCount">0</span></span>
+                <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Flashcard -->
+        <div class="card-wrapper" id="cardWrapper" role="button" tabindex="0" aria-label="Flashcard, tap to flip">
+            <div class="card" id="card">
+                <div class="card-face card-front">
+                    <span class="card-label">🇩🇪 German</span>
+                    <div class="article-badge" id="articleBadge">der</div>
+                    <div class="card-word" id="germanWord">—</div>
+                    <div class="card-hint">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" fill="none"/><path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-linecap="round"/></svg>
+                        <span>tap to flip</span>
+                    </div>
+                </div>
+                <div class="card-face card-back">
+                    <span class="card-label">🇬🇧 English</span>
+                    <div class="card-word" id="englishWord">—</div>
+                    <div class="card-hint">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" fill="none"/><path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-linecap="round"/></svg>
+                        <span>tap to flip back</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav-controls" aria-label="Card navigation">
+            <button class="btn btn-outline btn-icon" id="prevBtn" aria-label="Previous card">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
+            </button>
+            <button class="btn btn-outline btn-shuffle" id="shuffleBtn" aria-label="Shuffle cards">
+                <svg viewBox="0 0 24 24" width="18" height="18" style="margin-right:4px;"><polyline points="16 3 21 3 21 8" /><line x1="4" y1="20" x2="21" y2="3" /><polyline points="21 16 21 21 16 21" /><line x1="15" y1="15" x2="21" y2="21" /><line x1="4" y1="4" x2="9" y2="9" /></svg>
+                Shuffle
+            </button>
+            <button class="btn btn-primary" id="nextBtn" aria-label="Next card">
+                Next
+                <svg viewBox="0 0 24 24" width="18" height="18"><polyline points="9 18 15 12 9 6" /></svg>
+            </button>
+        </nav>
+
+        <footer class="footer">
+            <span id="currentNounLabel">—</span> · tap the card to see the meaning
+            <div class="article-key">
+                <span class="k-der">● der</span>
+                <span class="k-die">● die</span>
+                <span class="k-das">● das</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ——————————————————————————————————————————————
+        //  150 most common German nouns with articles
+        // ——————————————————————————————————————————————
+
+        const baseNouns = [
+            // — der — (masculine)
+            { de: 'der Mann', en: 'man' },
+            { de: 'der Hund', en: 'dog' },
+            { de: 'der Tisch', en: 'table' },
+            { de: 'der Stuhl', en: 'chair' },
+            { de: 'der Schrank', en: 'cupboard / wardrobe' },
+            { de: 'der Garten', en: 'garden' },
+            { de: 'der Bleistift', en: 'pencil' },
+            { de: 'der Lehrer', en: 'teacher' },
+            { de: 'der Freund', en: 'friend (male)' },
+            { de: 'der Zug', en: 'train' },
+            { de: 'der Flughafen', en: 'airport' },
+            { de: 'der Park', en: 'park' },
+            { de: 'der Turm', en: 'tower' },
+            { de: 'der Supermarkt', en: 'supermarket' },
+            { de: 'der Arzt', en: 'doctor' },
+            { de: 'der Kopf', en: 'head' },
+            { de: 'der Fuß', en: 'foot' },
+            { de: 'der Mund', en: 'mouth' },
+            { de: 'der Rücken', en: 'back' },
+            { de: 'der Finger', en: 'finger' },
+            { de: 'der Name', en: 'name' },
+            { de: 'der Tag', en: 'day' },
+            { de: 'der Monat', en: 'month' },
+            { de: 'der Morgen', en: 'morning' },
+            { de: 'der Abend', en: 'evening' },
+            { de: 'der Urlaub', en: 'vacation' },
+            { de: 'der Koffer', en: 'suitcase' },
+            { de: 'der Computer', en: 'computer' },
+            { de: 'der Kaffee', en: 'coffee' },
+            { de: 'der Käse', en: 'cheese' },
+            { de: 'der Apfel', en: 'apple' },
+            { de: 'der Saft', en: 'juice' },
+            { de: 'der Wein', en: 'wine' },
+            { de: 'der Kuchen', en: 'cake' },
+            { de: 'der Mittag', en: 'noon' },
+            { de: 'der Chef', en: 'boss' },
+            { de: 'der Kollege', en: 'colleague' },
+            { de: 'der Sport', en: 'sport' },
+            { de: 'der Film', en: 'movie' },
+            { de: 'der Roman', en: 'novel' },
+            { de: 'der Brief', en: 'letter' },
+            { de: 'der Versand', en: 'shipping' },
+            { de: 'der Geburtstag', en: 'birthday' },
+            { de: 'der Feiertag', en: 'holiday' },
+            { de: 'der Wald', en: 'forest' },
+            { de: 'der Fluss', en: 'river' },
+            { de: 'der See', en: 'lake' },
+            { de: 'der Berg', en: 'mountain' },
+            { de: 'der Himmel', en: 'sky' },
+            { de: 'der Regen', en: 'rain' },
+            { de: 'der Mond', en: 'moon' },
+            { de: 'der Garten', en: 'garden' }, // duplicate, let me replace
+            // replace duplicate with:
+            { de: 'der Schuh', en: 'shoe' },
+
+            // — die — (feminine)
+            { de: 'die Frau', en: 'woman' },
+            { de: 'die Katze', en: 'cat' },
+            { de: 'die Tür', en: 'door' },
+            { de: 'die Lampe', en: 'lamp' },
+            { de: 'die Küche', en: 'kitchen' },
+            { de: 'die Blume', en: 'flower' },
+            { de: 'die Schule', en: 'school' },
+            { de: 'die Schülerin', en: 'student (female)' },
+            { de: 'die Freundin', en: 'friend (female)' },
+            { de: 'die Straße', en: 'street' },
+            { de: 'die Bahn', en: 'railway / train' },
+            { de: 'die Stadt', en: 'city' },
+            { de: 'die Brücke', en: 'bridge' },
+            { de: 'die Kirche', en: 'church' },
+            { de: 'die Apotheke', en: 'pharmacy' },
+            { de: 'die Krankenschwester', en: 'nurse' },
+            { de: 'die Hand', en: 'hand' },
+            { de: 'die Nase', en: 'nose' },
+            { de: 'die Schulter', en: 'shoulder' },
+            { de: 'die Zehe', en: 'toe' },
+            { de: 'die Zeit', en: 'time' },
+            { de: 'die Nacht', en: 'night' },
+            { de: 'die Woche', en: 'week' },
+            { de: 'die Stunde', en: 'hour' },
+            { de: 'die Minute', en: 'minute' },
+            { de: 'die Sekunde', en: 'second' },
+            { de: 'die Reise', en: 'journey / trip' },
+            { de: 'die Tasche', en: 'bag' },
+            { de: 'die Maus', en: 'mouse' },
+            { de: 'die Milch', en: 'milk' },
+            { de: 'die Wurst', en: 'sausage' },
+            { de: 'die Banane', en: 'banana' },
+            { de: 'die Limonade', en: 'lemonade' },
+            { de: 'die Schokolade', en: 'chocolate' },
+            { de: 'die Torte', en: 'torte / cake' },
+            { de: 'die Arbeit', en: 'work' },
+            { de: 'die Firma', en: 'company' },
+            { de: 'die Pause', en: 'break' },
+            { de: 'die Freizeit', en: 'leisure time' },
+            { de: 'die Musik', en: 'music' },
+            { de: 'die Serie', en: 'series' },
+            { de: 'die Zeitung', en: 'newspaper' },
+            { de: 'die Post', en: 'mail' },
+            { de: 'die Lieferung', en: 'delivery' },
+            { de: 'die Hochzeit', en: 'wedding' },
+            { de: 'die Tradition', en: 'tradition' },
+            { de: 'die Wiese', en: 'meadow' },
+            { de: 'die Insel', en: 'island' },
+            { de: 'die Wolke', en: 'cloud' },
+            { de: 'die Sonne', en: 'sun' },
+            { de: 'die Tür', en: 'door' }, // duplicate, replace
+            // replace with:
+            { de: 'die Blume', en: 'flower' }, // already have, let me use something else
+            // let me just remove duplicates and add unique ones
+            // I'll fix this in the final list
+
+            // — das — (neuter)
+            { de: 'das Kind', en: 'child' },
+            { de: 'das Haus', en: 'house' },
+            { de: 'das Fenster', en: 'window' },
+            { de: 'das Bett', en: 'bed' },
+            { de: 'das Bad', en: 'bathroom' },
+            { de: 'das Buch', en: 'book' },
+            { de: 'das Klassenzimmer', en: 'classroom' },
+            { de: 'das Studium', en: 'studies' },
+            { de: 'das Auto', en: 'car' },
+            { de: 'das Fahrrad', en: 'bicycle' },
+            { de: 'das Flugzeug', en: 'airplane' },
+            { de: 'das Dorf', en: 'village' },
+            { de: 'das Gebäude', en: 'building' },
+            { de: 'das Museum', en: 'museum' },
+            { de: 'das Krankenhaus', en: 'hospital' },
+            { de: 'das Medikament', en: 'medicine' },
+            { de: 'das Bein', en: 'leg' },
+            { de: 'das Auge', en: 'eye' },
+            { de: 'das Ohr', en: 'ear' },
+            { de: 'das Knie', en: 'knee' },
+            { de: 'das Haar', en: 'hair' },
+            { de: 'das Geld', en: 'money' },
+            { de: 'das Jahr', en: 'year' },
+            { de: 'das Wochenende', en: 'weekend' },
+            { de: 'das Viertel', en: 'quarter' },
+            { de: 'das Ticket', en: 'ticket' },
+            { de: 'das Handy', en: 'mobile phone' },
+            { de: 'das Internet', en: 'internet' },
+            { de: 'das Brot', en: 'bread' },
+            { de: 'das Ei', en: 'egg' },
+            { de: 'das Wasser', en: 'water' },
+            { de: 'das Bier', en: 'beer' },
+            { de: 'das Eis', en: 'ice cream' },
+            { de: 'das Frühstück', en: 'breakfast' },
+            { de: 'das Büro', en: 'office' },
+            { de: 'das Gehalt', en: 'salary' },
+            { de: 'das Meeting', en: 'meeting' },
+            { de: 'das Hobby', en: 'hobby' },
+            { de: 'das Konzert', en: 'concert' },
+            { de: 'das Theater', en: 'theater' },
+            { de: 'das Magazin', en: 'magazine' },
+            { de: 'das Paket', en: 'package' },
+            { de: 'das Geschenk', en: 'gift' },
+            { de: 'das Fest', en: 'celebration' },
+            { de: 'das Brauchtum', en: 'custom' },
+            { de: 'das Feld', en: 'field' },
+            { de: 'das Meer', en: 'sea' },
+            { de: 'das Tal', en: 'valley' },
+            { de: 'das Wetter', en: 'weather' },
+            { de: 'das Licht', en: 'light' },
+            { de: 'das Universum', en: 'universe' },
+        ];
+
+        // ——————————————————————————————————————————————
+        //  Clean up duplicates and ensure exactly 150
+        // ——————————————————————————————————————————————
+
+        // Remove duplicates by tracking seen German words
+        const seen = new Set();
+        const uniqueNouns = [];
+        for (const noun of baseNouns) {
+            const key = noun.de;
+            if (!seen.has(key)) {
+                seen.add(key);
+                uniqueNouns.push(noun);
+            }
+        }
+
+        // If we have fewer than 150, add more
+        const extraNouns = [
+            { de: 'der Teller', en: 'plate' },
+            { de: 'die Gabel', en: 'fork' },
+            { de: 'das Messer', en: 'knife' },
+            { de: 'der Löffel', en: 'spoon' },
+            { de: 'die Tasse', en: 'cup' },
+            { de: 'das Glas', en: 'glass' },
+            { de: 'der Topf', en: 'pot' },
+            { de: 'die Pfanne', en: 'pan' },
+            { de: 'das Salz', en: 'salt' },
+            { de: 'der Pfeffer', en: 'pepper' },
+            { de: 'die Zwiebel', en: 'onion' },
+            { de: 'der Knoblauch', en: 'garlic' },
+            { de: 'das Öl', en: 'oil' },
+            { de: 'der Essig', en: 'vinegar' },
+            { de: 'die Soße', en: 'sauce' },
+            { de: 'der Reis', en: 'rice' },
+            { de: 'die Nudel', en: 'noodle' },
+            { de: 'das Fleisch', en: 'meat' },
+            { de: 'der Fisch', en: 'fish' },
+            { de: 'das Gemüse', en: 'vegetable' },
+            { de: 'der Salat', en: 'salad' },
+            { de: 'die Kirsche', en: 'cherry' },
+            { de: 'der Pfirsich', en: 'peach' },
+            { de: 'die Traube', en: 'grape' },
+            { de: 'das Schwein', en: 'pig' },
+            { de: 'die Kuh', en: 'cow' },
+            { de: 'das Huhn', en: 'chicken' },
+            { de: 'der Hahn', en: 'rooster' },
+            { de: 'die Ente', en: 'duck' },
+            { de: 'das Pferd', en: 'horse' },
+            { de: 'der Esel', en: 'donkey' },
+            { de: 'die Ziege', en: 'goat' },
+            { de: 'das Schaf', en: 'sheep' },
+            { de: 'der Vogel', en: 'bird' },
+            { de: 'die Taube', en: 'pigeon' },
+            { de: 'das Eichhörnchen', en: 'squirrel' },
+            { de: 'der Igel', en: 'hedgehog' },
+            { de: 'die Mücke', en: 'mosquito' },
+            { de: 'der Schmetterling', en: 'butterfly' },
+            { de: 'die Biene', en: 'bee' },
+            { de: 'der Käfer', en: 'beetle' },
+            { de: 'die Ameise', en: 'ant' },
+            { de: 'der Regenwurm', en: 'earthworm' },
+            { de: 'die Spinne', en: 'spider' },
+            { de: 'der Skorpion', en: 'scorpion' },
+        ];
+
+        // Add extras until we reach 150
+        let idx = 0;
+        while (uniqueNouns.length < 150 && idx < extraNouns.length) {
+            const candidate = extraNouns[idx];
+            if (!seen.has(candidate.de)) {
+                seen.add(candidate.de);
+                uniqueNouns.push(candidate);
+            }
+            idx++;
+        }
+
+        // If still less than 150, add more generic ones
+        const fallbackNouns = [
+            { de: 'der Baum', en: 'tree' },
+            { de: 'die Blume', en: 'flower' },
+            { de: 'das Gras', en: 'grass' },
+            { de: 'der Stein', en: 'stone' },
+            { de: 'die Erde', en: 'earth' },
+            { de: 'das Feuer', en: 'fire' },
+            { de: 'der Wind', en: 'wind' },
+            { de: 'die Luft', en: 'air' },
+            { de: 'das Eis', en: 'ice' },
+            { de: 'der Schnee', en: 'snow' },
+        ];
+        let fidx = 0;
+        while (uniqueNouns.length < 150 && fidx < fallbackNouns.length) {
+            const candidate = fallbackNouns[fidx];
+            if (!seen.has(candidate.de)) {
+                seen.add(candidate.de);
+                uniqueNouns.push(candidate);
+            }
+            fidx++;
+        }
+
+        // Truncate to exactly 150 if somehow over
+        const cards = uniqueNouns.slice(0, 150);
+
+        // ——————————————————————————————————————————————
+        //  STATE & LOGIC
+        // ——————————————————————————————————————————————
+
+        let currentIndex = 0;
+        let isFlipped = false;
+
+        const cardEl = document.getElementById('card');
+        const wrapper = document.getElementById('cardWrapper');
+        const germanWord = document.getElementById('germanWord');
+        const englishWord = document.getElementById('englishWord');
+        const articleBadge = document.getElementById('articleBadge');
+        const currentIndexEl = document.getElementById('currentIndex');
+        const totalCountEl = document.getElementById('totalCount');
+        const totalBadge = document.getElementById('totalBadge');
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const currentNounLabel = document.getElementById('currentNounLabel');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+
+        function getArticle(word) {
+            if (word.startsWith('der ')) return 'der';
+            if (word.startsWith('die ')) return 'die';
+            if (word.startsWith('das ')) return 'das';
+            return '';
+        }
+
+        function getWordWithoutArticle(word) {
+            if (word.startsWith('der ')) return word.substring(4);
+            if (word.startsWith('die ')) return word.substring(4);
+            if (word.startsWith('das ')) return word.substring(4);
+            return word;
+        }
+
+        function renderCard() {
+            const noun = cards[currentIndex];
+            if (!noun) return;
+
+            const article = getArticle(noun.de);
+            const wordOnly = getWordWithoutArticle(noun.de);
+
+            // Show the full German with article on the front
+            germanWord.textContent = noun.de;
+            englishWord.textContent = noun.en;
+
+            // Article badge
+            articleBadge.textContent = article;
+            articleBadge.className = 'article-badge ' + article;
+
+            currentIndexEl.textContent = currentIndex + 1;
+            totalCountEl.textContent = cards.length;
+            totalBadge.textContent = cards.length;
+
+            const pct = cards.length > 0 ? ((currentIndex + 1) / cards.length) * 100 : 0;
+            progressFill.style.width = pct + '%';
+            progressPercent.textContent = Math.round(pct) + '%';
+            document.querySelector('.progress-track').setAttribute('aria-valuenow', pct);
+
+            currentNounLabel.textContent = noun.de;
+
+            // Reset flip when changing card
+            if (isFlipped) {
+                cardEl.classList.remove('flipped');
+                isFlipped = false;
+            }
+
+            // Re‑trigger animation
+            wrapper.style.animation = 'none';
+            requestAnimationFrame(() => {
+                wrapper.style.animation = 'fadeSlideUp 0.4s ease forwards';
+            });
+        }
+
+        function goTo(index) {
+            if (index < 0) index = cards.length - 1;
+            if (index >= cards.length) index = 0;
+            currentIndex = index;
+            renderCard();
+        }
+
+        function next() { goTo(currentIndex + 1); }
+
+        function prev() { goTo(currentIndex - 1); }
+
+        function shuffle() {
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+            currentIndex = 0;
+            renderCard();
+        }
+
+        function toggleFlip() {
+            isFlipped = !isFlipped;
+            cardEl.classList.toggle('flipped', isFlipped);
+        }
+
+        // ——— Event Binding ———
+
+        wrapper.addEventListener('click', toggleFlip);
+        wrapper.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleFlip();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') { e.preventDefault();
+                next(); } else if (e.key === 'ArrowLeft') { e.preventDefault();
+                prev(); } else if (e.key === 'r' || e.key === 'R') { e.preventDefault();
+                shuffle(); }
+        });
+
+        nextBtn.addEventListener('click', next);
+        prevBtn.addEventListener('click', prev);
+        shuffleBtn.addEventListener('click', shuffle);
+
+        // ——— Init ———
+
+        shuffle(); // start with shuffled deck
+        renderCard();
+    </script>
+
+</body>
+</html>
