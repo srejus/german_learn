@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Noun Runner · der · die · das</title>
+    <link rel="apple-touch-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyF3SK7TsonYT_mUTL2sXzdhhRXovX_K6iq6VIK6Zujw&s=10">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ——— Reset & Base ——— */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0b0e17;
+            --card-bg: #161c2e;
+            --text-primary: #f0f4ff;
+            --text-secondary: #98a3c7;
+            --text-muted: #5b6a8f;
+            --accent: #6c8cff;
+            --accent-glow: rgba(108, 140, 255, 0.35);
+            --success: #4ade80;
+            --danger: #f87171;
+            --gold: #fbbf24;
+            --radius: 20px;
+            --radius-sm: 12px;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --shadow-glow: 0 0 60px rgba(108, 140, 255, 0.15);
+            /* article colors */
+            --der-color: #6c8cff;
+            --die-color: #f472b6;
+            --das-color: #34d399;
+            --der-bg: rgba(108, 140, 255, 0.15);
+            --die-bg: rgba(244, 114, 182, 0.15);
+            --das-bg: rgba(52, 211, 153, 0.15);
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            margin: 0;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* ——— Game Container ——— */
+        .game-container {
+            width: 100%;
+            max-width: 520px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px 18px 24px;
+            box-shadow: var(--shadow-glow), 0 20px 60px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        /* ——— Background Road Animation ——— */
+        .road-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            border-radius: var(--radius);
+            pointer-events: none;
+        }
+        .road-bg .line {
+            position: absolute;
+            width: 4px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            animation: roadScroll 1.2s linear infinite;
+        }
+        @keyframes roadScroll {
+            0% {
+                transform: translateY(0);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(60px);
+                opacity: 0;
+            }
+        }
+        .road-bg .glow-spot {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(108, 140, 255, 0.06), transparent 70%);
+            width: 200px;
+            height: 200px;
+            animation: pulseGlow 3s ease-in-out infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0.8;
+                transform: scale(1.2);
+            }
+        }
+
+        /* ——— Header / Score ——— */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2px 16px;
+            position: relative;
+            z-index: 2;
+        }
+        .game-header .score-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .game-header .score-box {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 40px;
+            padding: 6px 16px 6px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(4px);
+        }
+        .game-header .score-box .icon {
+            font-size: 1.1rem;
+        }
+        .game-header .score-box .label {
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+        .game-header .score-box .value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            min-width: 28px;
+            text-align: center;
+        }
+        .game-header .score-box .value.gold {
+            color: var(--gold);
+        }
+
+        .game-header .high-score {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px 12px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .game-header .high-score span {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        /* ——— Speed Indicator ——— */
+        .speed-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+            padding: 0 2px 12px;
+        }
+        .speed-indicator .speed-label {
+            font-size: 0.55rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+        .speed-indicator .speed-bar {
+            flex: 1;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .speed-indicator .speed-bar .fill {
+            height: 100%;
+            width: 10%;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* ——— Runner ——— */
+        .runner-area {
+            position: relative;
+            z-index: 2;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 4px 0 8px;
+        }
+        .runner {
+            font-size: 4.2rem;
+            line-height: 1;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: translateY(0);
+            filter: drop-shadow(0 8px 30px rgba(108, 140, 255, 0.3));
+        }
+        .runner.jump {
+            animation: runnerJump 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes runnerJump {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+            40% {
+                transform: translateY(-55px) scale(1.1);
+            }
+            100% {
+                transform: translateY(0) scale(1);
+            }
+        }
+        .runner.shake {
+            animation: runnerShake 0.4s ease forwards;
+        }
+        @keyframes runnerShake {
+            0% {
+                transform: translateX(0) rotate(0deg);
+            }
+            20% {
+                transform: translateX(-12px) rotate(-8deg);
+            }
+            40% {
+                transform: translateX(10px) rotate(6deg);
+            }
+            60% {
+                transform: translateX(-6px) rotate(-4deg);
+            }
+            80% {
+                transform: translateX(4px) rotate(2deg);
+            }
+            100% {
+                transform: translateX(0) rotate(0deg);
+            }
+        }
+
+        /* ——— Word Display ——— */
+        .word-display {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 18px 0 14px;
+            margin: 2px 0 6px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .word-display .english-word {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            text-shadow: 0 0 40px rgba(108, 140, 255, 0.15);
+        }
+        .word-display .hint-text {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+        .word-display .article-hint {
+            display: inline-flex;
+            gap: 12px;
+            margin-top: 6px;
+            font-size: 0.65rem;
+        }
+        .word-display .article-hint span {
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .word-display .article-hint .h-der {
+            color: var(--der-color);
+        }
+        .word-display .article-hint .h-die {
+            color: var(--die-color);
+        }
+        .word-display .article-hint .h-das {
+            color: var(--das-color);
+        }
+
+        /* ——— Answer Options ——— */
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            position: relative;
+            z-index: 2;
+            padding: 12px 0 6px;
+        }
+        .option-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 2px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-sm);
+            padding: 16px 8px;
+            font-family: var(--font);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            overflow: hidden;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.3;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .option-btn:active {
+            transform: scale(0.96);
+        }
+        .option-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        .option-btn .article-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 1px 8px;
+            border-radius: 12px;
+            opacity: 0.7;
+        }
+        .option-btn .article-tag.der {
+            color: var(--der-color);
+            background: var(--der-bg);
+        }
+        .option-btn .article-tag.die {
+            color: var(--die-color);
+            background: var(--die-bg);
+        }
+        .option-btn .article-tag.das {
+            color: var(--das-color);
+            background: var(--das-bg);
+        }
+        .option-btn .noun-word {
+            font-weight: 600;
+        }
+        .option-btn.correct {
+            background: rgba(74, 222, 128, 0.2);
+            border-color: var(--success);
+            animation: popCorrect 0.4s ease;
+        }
+        .option-btn.wrong {
+            background: rgba(248, 113, 113, 0.2);
+            border-color: var(--danger);
+            animation: popWrong 0.4s ease;
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .option-btn .emoji {
+            font-size: 1.2rem;
+            margin-right: 6px;
+        }
+        @keyframes popCorrect {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.04);
+                box-shadow: 0 0 30px rgba(74, 222, 128, 0.3);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        @keyframes popWrong {
+            0% {
+                transform: scale(1);
+            }
+            30% {
+                transform: translateX(-6px);
+            }
+            60% {
+                transform: translateX(6px);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        /* ——— Game Over Overlay ——— */
+        .game-over-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            background: rgba(11, 14, 23, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 24px;
+            text-align: center;
+            animation: fadeInOverlay 0.5s ease;
+        }
+        .game-over-overlay.active {
+            display: flex;
+        }
+        @keyframes fadeInOverlay {
+            from {
+                opacity: 0;
+                transform: scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .game-over-overlay .go-icon {
+            font-size: 4rem;
+            margin-bottom: 8px;
+        }
+        .game-over-overlay .go-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 2px;
+        }
+        .game-over-overlay .go-sub {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .game-over-overlay .go-score {
+            font-size: 2.6rem;
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 2px;
+        }
+        .game-over-overlay .go-score-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .game-over-overlay .go-best {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        .game-over-overlay .go-best span {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .btn-restart {
+            background: var(--accent);
+            border: none;
+            border-radius: 60px;
+            padding: 14px 40px;
+            font-family: var(--font);
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 24px rgba(108, 140, 255, 0.35);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-restart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 40px rgba(108, 140, 255, 0.45);
+        }
+        .btn-restart:active {
+            transform: scale(0.96);
+        }
+
+        /* ——— Streak / Combo ——— */
+        .streak-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 5;
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 40px;
+            padding: 4px 14px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--gold);
+            display: none;
+            backdrop-filter: blur(4px);
+            animation: streakPop 0.3s ease;
+        }
+        .streak-badge.active {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        @keyframes streakPop {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* ——— Particles ——— */
+        .particle-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 3;
+            overflow: hidden;
+            border-radius: var(--radius);
+        }
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gold);
+            animation: particleFly 0.8s ease-out forwards;
+        }
+        @keyframes particleFly {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
+        }
+
+        /* ——— Responsive ——— */
+        @media (max-width: 500px) {
+            .game-container {
+                padding: 14px 12px 18px;
+                border-radius: 16px;
+            }
+            .word-display .english-word {
+                font-size: 1.6rem;
+            }
+            .option-btn {
+                font-size: 0.8rem;
+                padding: 14px 6px;
+                min-height: 48px;
+            }
+            .runner {
+                font-size: 3.2rem;
+            }
+            .runner-area {
+                height: 80px;
+            }
+            .game-header .score-box {
+                padding: 4px 12px 4px 10px;
+            }
+            .game-header .score-box .value {
+                font-size: 0.95rem;
+            }
+            .game-over-overlay .go-score {
+                font-size: 2.2rem;
+            }
+            .game-over-overlay .go-title {
+                font-size: 1.4rem;
+            }
+            .options {
+                gap: 8px;
+            }
+            .btn-restart {
+                padding: 12px 32px;
+                font-size: 0.9rem;
+            }
+            .option-btn .article-tag {
+                font-size: 0.55rem;
+                padding: 1px 6px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .word-display .english-word {
+                font-size: 1.3rem;
+            }
+            .option-btn {
+                font-size: 0.7rem;
+                padding: 10px 4px;
+                min-height: 40px;
+            }
+            .runner {
+                font-size: 2.6rem;
+            }
+            .runner-area {
+                height: 70px;
+            }
+            .game-header .score-box .value {
+                font-size: 0.8rem;
+                min-width: 20px;
+            }
+            .game-header .score-box .label {
+                font-size: 0.5rem;
+            }
+            .option-btn .article-tag {
+                font-size: 0.5rem;
+                padding: 1px 4px;
+            }
+        }
+
+        @media (min-height: 800px) {
+            .runner-area {
+                height: 120px;
+            }
+            .runner {
+                font-size: 5rem;
+            }
+            .word-display .english-word {
+                font-size: 2.8rem;
+            }
+            .option-btn {
+                padding: 20px 12px;
+                font-size: 1.05rem;
+                min-height: 64px;
+            }
+        }
+
+        /* ——— Misc ——— */
+        .hidden {
+            display: none !important;
+        }
+        .text-glow {
+            text-shadow: 0 0 40px rgba(108, 140, 255, 0.2);
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="gameContainer">
+
+        <!-- Road Background -->
+        <div class="road-bg" id="roadBg">
+            <div class="glow-spot" style="top:10%;left:10%;"></div>
+            <div class="glow-spot" style="bottom:20%;right:5%;animation-delay:1.5s;"></div>
+        </div>
+
+        <!-- Streak Badge -->
+        <div class="streak-badge" id="streakBadge">
+            🔥 <span id="streakCount">0</span>x
+        </div>
+
+        <!-- Header -->
+        <div class="game-header">
+            <div class="score-wrap">
+                <div class="score-box">
+                    <span class="icon">⭐</span>
+                    <span class="label">Score</span>
+                    <span class="value" id="scoreDisplay">0</span>
+                </div>
+            </div>
+            <div class="high-score">
+                🏆 Best <span id="highScoreDisplay">0</span>
+            </div>
+        </div>
+
+        <!-- Speed -->
+        <div class="speed-indicator">
+            <span class="speed-label">⚡ Speed</span>
+            <div class="speed-bar">
+                <div class="fill" id="speedFill"></div>
+            </div>
+        </div>
+
+        <!-- Runner -->
+        <div class="runner-area">
+            <div class="runner" id="runner">🏃</div>
+        </div>
+
+        <!-- Word Display -->
+        <div class="word-display">
+            <div class="english-word" id="englishWord">—</div>
+            <div class="hint-text">🇩🇪 pick the correct noun with article</div>
+            <div class="article-hint">
+                <span class="h-der">der</span>
+                <span class="h-die">die</span>
+                <span class="h-das">das</span>
+            </div>
+        </div>
+
+        <!-- Options -->
+        <div class="options" id="optionsContainer">
+            <button class="option-btn" data-index="0">—</button>
+            <button class="option-btn" data-index="1">—</button>
+            <button class="option-btn" data-index="2">—</button>
+            <button class="option-btn" data-index="3">—</button>
+        </div>
+
+        <!-- Particle Container -->
+        <div class="particle-container" id="particleContainer"></div>
+
+        <!-- Game Over -->
+        <div class="game-over-overlay" id="gameOverOverlay">
+            <div class="go-icon">💥</div>
+            <div class="go-title">Game Over</div>
+            <div class="go-sub">You stumbled on the articles!</div>
+            <div class="go-score-label">Your Score</div>
+            <div class="go-score" id="finalScore">0</div>
+            <div class="go-best">🏆 Best: <span id="finalBest">0</span></div>
+            <button class="btn-restart" id="restartBtn">
+                🔄 Play Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ——————————————————————————————————————————————
+        //  1.  NOUN DATA  –  100 common nouns with articles
+        // ——————————————————————————————————————————————
+
+        const nounData = [
+            // der (masculine)
+            { de: 'der Mann', en: 'man' },
+            { de: 'der Hund', en: 'dog' },
+            { de: 'der Tisch', en: 'table' },
+            { de: 'der Stuhl', en: 'chair' },
+            { de: 'der Schrank', en: 'cupboard' },
+            { de: 'der Garten', en: 'garden' },
+            { de: 'der Bleistift', en: 'pencil' },
+            { de: 'der Lehrer', en: 'teacher' },
+            { de: 'der Freund', en: 'friend' },
+            { de: 'der Zug', en: 'train' },
+            { de: 'der Flughafen', en: 'airport' },
+            { de: 'der Park', en: 'park' },
+            { de: 'der Turm', en: 'tower' },
+            { de: 'der Supermarkt', en: 'supermarket' },
+            { de: 'der Arzt', en: 'doctor' },
+            { de: 'der Kopf', en: 'head' },
+            { de: 'der Fuß', en: 'foot' },
+            { de: 'der Mund', en: 'mouth' },
+            { de: 'der Rücken', en: 'back' },
+            { de: 'der Finger', en: 'finger' },
+            { de: 'der Name', en: 'name' },
+            { de: 'der Tag', en: 'day' },
+            { de: 'der Monat', en: 'month' },
+            { de: 'der Morgen', en: 'morning' },
+            { de: 'der Abend', en: 'evening' },
+            { de: 'der Urlaub', en: 'vacation' },
+            { de: 'der Koffer', en: 'suitcase' },
+            { de: 'der Computer', en: 'computer' },
+            { de: 'der Kaffee', en: 'coffee' },
+            { de: 'der Käse', en: 'cheese' },
+            { de: 'der Apfel', en: 'apple' },
+            { de: 'der Saft', en: 'juice' },
+            { de: 'der Wein', en: 'wine' },
+            { de: 'der Kuchen', en: 'cake' },
+            // die (feminine)
+            { de: 'die Frau', en: 'woman' },
+            { de: 'die Katze', en: 'cat' },
+            { de: 'die Tür', en: 'door' },
+            { de: 'die Lampe', en: 'lamp' },
+            { de: 'die Küche', en: 'kitchen' },
+            { de: 'die Blume', en: 'flower' },
+            { de: 'die Schule', en: 'school' },
+            { de: 'die Straße', en: 'street' },
+            { de: 'die Bahn', en: 'railway' },
+            { de: 'die Stadt', en: 'city' },
+            { de: 'die Brücke', en: 'bridge' },
+            { de: 'die Kirche', en: 'church' },
+            { de: 'die Apotheke', en: 'pharmacy' },
+            { de: 'die Hand', en: 'hand' },
+            { de: 'die Nase', en: 'nose' },
+            { de: 'die Schulter', en: 'shoulder' },
+            { de: 'die Zeit', en: 'time' },
+            { de: 'die Nacht', en: 'night' },
+            { de: 'die Woche', en: 'week' },
+            { de: 'die Stunde', en: 'hour' },
+            { de: 'die Minute', en: 'minute' },
+            { de: 'die Sekunde', en: 'second' },
+            { de: 'die Reise', en: 'trip' },
+            { de: 'die Tasche', en: 'bag' },
+            { de: 'die Maus', en: 'mouse' },
+            { de: 'die Milch', en: 'milk' },
+            { de: 'die Wurst', en: 'sausage' },
+            { de: 'die Banane', en: 'banana' },
+            { de: 'die Schokolade', en: 'chocolate' },
+            { de: 'die Torte', en: 'torte' },
+            { de: 'die Arbeit', en: 'work' },
+            { de: 'die Firma', en: 'company' },
+            { de: 'die Pause', en: 'break' },
+            { de: 'die Musik', en: 'music' },
+            { de: 'die Zeitung', en: 'newspaper' },
+            { de: 'die Post', en: 'mail' },
+            { de: 'die Hochzeit', en: 'wedding' },
+            // das (neuter)
+            { de: 'das Kind', en: 'child' },
+            { de: 'das Haus', en: 'house' },
+            { de: 'das Fenster', en: 'window' },
+            { de: 'das Bett', en: 'bed' },
+            { de: 'das Bad', en: 'bathroom' },
+            { de: 'das Buch', en: 'book' },
+            { de: 'das Auto', en: 'car' },
+            { de: 'das Fahrrad', en: 'bicycle' },
+            { de: 'das Flugzeug', en: 'airplane' },
+            { de: 'das Dorf', en: 'village' },
+            { de: 'das Gebäude', en: 'building' },
+            { de: 'das Museum', en: 'museum' },
+            { de: 'das Krankenhaus', en: 'hospital' },
+            { de: 'das Bein', en: 'leg' },
+            { de: 'das Auge', en: 'eye' },
+            { de: 'das Ohr', en: 'ear' },
+            { de: 'das Knie', en: 'knee' },
+            { de: 'das Haar', en: 'hair' },
+            { de: 'das Geld', en: 'money' },
+            { de: 'das Jahr', en: 'year' },
+            { de: 'das Wochenende', en: 'weekend' },
+            { de: 'das Ticket', en: 'ticket' },
+            { de: 'das Handy', en: 'mobile' },
+            { de: 'das Internet', en: 'internet' },
+            { de: 'das Brot', en: 'bread' },
+            { de: 'das Ei', en: 'egg' },
+            { de: 'das Wasser', en: 'water' },
+            { de: 'das Bier', en: 'beer' },
+            { de: 'das Eis', en: 'ice cream' },
+            { de: 'das Frühstück', en: 'breakfast' },
+            { de: 'das Büro', en: 'office' },
+            { de: 'das Geschenk', en: 'gift' },
+            { de: 'das Fest', en: 'festival' },
+            { de: 'das Meer', en: 'sea' },
+            { de: 'das Wetter', en: 'weather' },
+            { de: 'das Licht', en: 'light' },
+        ];
+
+        // ——————————————————————————————————————————————
+        //  2.  GAME STATE
+        // ——————————————————————————————————————————————
+
+        let score = 0;
+        let highScore = parseInt(localStorage.getItem('nounRunnerHighScore')) || 0;
+        let streak = 0;
+        let currentNoun = null;
+        let correctAnswer = '';
+        let isPlaying = false;
+        let isGameOver = false;
+        let speedLevel = 1;
+        let timer = null;
+        let optionsLocked = false;
+
+        // DOM refs
+        const englishWordEl = document.getElementById('englishWord');
+        const optionsBtns = document.querySelectorAll('.option-btn');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const highScoreDisplay = document.getElementById('highScoreDisplay');
+        const speedFill = document.getElementById('speedFill');
+        const runner = document.getElementById('runner');
+        const gameOverOverlay = document.getElementById('gameOverOverlay');
+        const finalScore = document.getElementById('finalScore');
+        const finalBest = document.getElementById('finalBest');
+        const restartBtn = document.getElementById('restartBtn');
+        const streakBadge = document.getElementById('streakBadge');
+        const streakCount = document.getElementById('streakCount');
+        const particleContainer = document.getElementById('particleContainer');
+
+        // ——————————————————————————————————————————————
+        //  3.  GAME FUNCTIONS
+        // ——————————————————————————————————————————————
+
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function getRandomNoun() {
+            return nounData[Math.floor(Math.random() * nounData.length)];
+        }
+
+        function getRandomWrongNoun(correctEn) {
+            const others = nounData.filter(n => n.en !== correctEn);
+            if (others.length === 0) return nounData[0];
+            return others[Math.floor(Math.random() * others.length)];
+        }
+
+        function generateOptions(correctNoun) {
+            let options = [correctNoun];
+            const usedEn = new Set([correctNoun.en]);
+            while (options.length < 4) {
+                const wrong = getRandomWrongNoun(correctNoun.en);
+                if (!usedEn.has(wrong.en)) {
+                    usedEn.add(wrong.en);
+                    options.push(wrong);
+                }
+            }
+            return shuffleArray(options);
+        }
+
+        function getArticle(word) {
+            if (word.startsWith('der ')) return 'der';
+            if (word.startsWith('die ')) return 'die';
+            if (word.startsWith('das ')) return 'das';
+            return '';
+        }
+
+        function getWordWithoutArticle(word) {
+            if (word.startsWith('der ')) return word.substring(4);
+            if (word.startsWith('die ')) return word.substring(4);
+            if (word.startsWith('das ')) return word.substring(4);
+            return word;
+        }
+
+        function spawnNoun() {
+            if (isGameOver) return;
+
+            currentNoun = getRandomNoun();
+            correctAnswer = currentNoun.de;
+            englishWordEl.textContent = currentNoun.en;
+
+            const options = generateOptions(currentNoun);
+            optionsBtns.forEach((btn, i) => {
+                const noun = options[i];
+                const article = getArticle(noun.de);
+                const wordOnly = getWordWithoutArticle(noun.de);
+                btn.innerHTML = `
+                        <span class="article-tag ${article}">${article}</span>
+                        <span class="noun-word">${wordOnly}</span>
+                    `;
+                btn.className = 'option-btn';
+                btn.disabled = false;
+                btn.dataset.correct = (noun.de === correctAnswer) ? 'true' : 'false';
+                btn.dataset.article = article;
+            });
+
+            optionsLocked = false;
+        }
+
+        function handleAnswer(btn) {
+            if (optionsLocked || isGameOver || !isPlaying) return;
+            optionsLocked = true;
+
+            const isCorrect = btn.dataset.correct === 'true';
+
+            // Disable all buttons
+            optionsBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+                score++;
+                streak++;
+                updateScoreUI();
+
+                // Runner jump
+                runner.classList.remove('jump');
+                void runner.offsetWidth;
+                runner.classList.add('jump');
+
+                // Particles
+                spawnParticles(btn, '#4ade80');
+
+                // Streak
+                if (streak >= 3) {
+                    streakBadge.classList.add('active');
+                    streakCount.textContent = streak;
+                }
+
+                // Speed up
+                speedLevel = Math.min(10, 1 + Math.floor(score / 5));
+                updateSpeedUI();
+
+                // Spawn next after delay
+                setTimeout(() => {
+                    if (!isGameOver) {
+                        spawnNoun();
+                    }
+                }, 320);
+
+            } else {
+                btn.classList.add('wrong');
+                runner.classList.remove('shake');
+                void runner.offsetWidth;
+                runner.classList.add('shake');
+                streak = 0;
+                streakBadge.classList.remove('active');
+
+                // Show correct answer
+                optionsBtns.forEach(b => {
+                    if (b.dataset.correct === 'true') {
+                        b.classList.add('correct');
+                    }
+                });
+
+                // Game over after delay
+                setTimeout(() => {
+                    endGame();
+                }, 500);
+            }
+        }
+
+        function spawnParticles(btn, color) {
+            const rect = btn.getBoundingClientRect();
+            const containerRect = particleContainer.getBoundingClientRect();
+            const cx = rect.left - containerRect.left + rect.width / 2;
+            const cy = rect.top - containerRect.top + rect.height / 2;
+
+            for (let i = 0; i < 12; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 40 + Math.random() * 80;
+                const tx = Math.cos(angle) * dist;
+                const ty = Math.sin(angle) * dist - 30;
+                p.style.cssText = `
+                        left: ${cx}px;
+                        top: ${cy}px;
+                        background: ${color};
+                        width: ${4 + Math.random() * 8}px;
+                        height: ${4 + Math.random() * 8}px;
+                        --tx: ${tx}px;
+                        --ty: ${ty}px;
+                        animation-duration: ${0.5 + Math.random() * 0.4}s;
+                    `;
+                particleContainer.appendChild(p);
+                setTimeout(() => p.remove(), 1000);
+            }
+        }
+
+        function updateScoreUI() {
+            scoreDisplay.textContent = score;
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('nounRunnerHighScore', highScore);
+                highScoreDisplay.textContent = highScore;
+            }
+        }
+
+        function updateSpeedUI() {
+            const pct = Math.min(100, (speedLevel / 10) * 100);
+            speedFill.style.width = pct + '%';
+        }
+
+        function endGame() {
+            isGameOver = true;
+            isPlaying = false;
+            clearTimeout(timer);
+
+            finalScore.textContent = score;
+            finalBest.textContent = highScore;
+            gameOverOverlay.classList.add('active');
+
+            optionsBtns.forEach(b => b.disabled = true);
+        }
+
+        function startGame() {
+            // Reset state
+            score = 0;
+            streak = 0;
+            speedLevel = 1;
+            isGameOver = false;
+            isPlaying = true;
+            optionsLocked = false;
+
+            gameOverOverlay.classList.remove('active');
+            streakBadge.classList.remove('active');
+
+            // Reset UI
+            updateScoreUI();
+            updateSpeedUI();
+            highScoreDisplay.textContent = highScore;
+            runner.className = 'runner';
+
+            // Clear particles
+            particleContainer.innerHTML = '';
+
+            // Spawn first noun
+            spawnNoun();
+        }
+
+        // ——————————————————————————————————————————————
+        //  4.  EVENT BINDING
+        // ——————————————————————————————————————————————
+
+        optionsBtns.forEach(btn => {
+            btn.addEventListener('click', () => handleAnswer(btn));
+            btn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                handleAnswer(btn);
+            });
+        });
+
+        restartBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            startGame();
+        });
+
+        // Keyboard support: 1-4 to answer, R to restart
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '1' && e.key <= '4') {
+                const idx = parseInt(e.key) - 1;
+                if (optionsBtns[idx] && !optionsBtns[idx].disabled) {
+                    handleAnswer(optionsBtns[idx]);
+                }
+            }
+            if (e.key === 'r' || e.key === 'R') {
+                if (isGameOver) startGame();
+            }
+            if (e.key === ' ' && isGameOver) {
+                e.preventDefault();
+                startGame();
+            }
+        });
+
+        // ——————————————————————————————————————————————
+        //  5.  ROAD BACKGROUND ANIMATION
+        // ——————————————————————————————————————————————
+
+        function createRoadLines() {
+            const bg = document.getElementById('roadBg');
+            for (let i = 0; i < 14; i++) {
+                const line = document.createElement('div');
+                line.className = 'line';
+                line.style.left = (10 + Math.random() * 80) + '%';
+                line.style.top = (Math.random() * 100) + '%';
+                line.style.animationDelay = (Math.random() * 1.2) + 's';
+                line.style.animationDuration = (0.8 + Math.random() * 0.6) + 's';
+                bg.appendChild(line);
+            }
+        }
+        createRoadLines();
+
+        // ——————————————————————————————————————————————
+        //  6.  INIT
+        // ——————————————————————————————————————————————
+
+        highScoreDisplay.textContent = highScore;
+        startGame();
+
+        console.log('🏃 Noun Runner loaded! 100 nouns with der/die/das.');
+        console.log('📖 See the English word, pick the correct German noun with article.');
+        console.log('⌨️  Keys 1-4 to answer, R to restart.');
+    </script>
+
+</body>
+</html>
